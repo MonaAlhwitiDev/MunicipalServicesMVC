@@ -1,0 +1,69 @@
+﻿@{
+    ViewData["Title"] = "الرئيسية";
+}
+
+<div class="container mt-4">
+
+    <div class="text-center mb-5">
+        <h1 class="display-6 fw-bold">نظام إدارة الخدمات البلدية</h1>
+        <p class="lead text-muted">
+            نظام لإدارة الإدارات والموظفين والخدمات البلدية
+        </p>
+    </div>
+
+    <div class="row g-4">
+
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body text-center">
+                    <h5 class="card-title">الإدارات</h5>
+                    <p class="card-text">
+                        عرض وإدارة الإدارات الموجودة في النظام.
+                    </p>
+
+                    <a asp-controller="Departments"
+                       asp-action="Index"
+                       class="btn btn-primary">
+                        عرض الإدارات
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body text-center">
+                    <h5 class="card-title">الموظفين</h5>
+                    <p class="card-text">
+                        عرض وإدارة بيانات الموظفين.
+                    </p>
+
+                    <a asp-controller="Employees"
+                       asp-action="Index"
+                       class="btn btn-primary">
+                        عرض الموظفين
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body text-center">
+                    <h5 class="card-title">الخدمات</h5>
+                    <p class="card-text">
+                        عرض وإدارة الخدمات البلدية.
+                    </p>
+
+                    <a asp-controller="Services"
+                       asp-action="Index"
+                       class="btn btn-primary">
+                        عرض الخدمات
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
