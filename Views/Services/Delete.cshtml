@@ -4,36 +4,40 @@
     ViewData["Title"] = "حذف الخدمة";
 }
 
-<div class="container mt-4">
+<div class="container py-4">
 
     <div class="row justify-content-center">
 
-        <div class="col-md-6">
+        <div class="col-lg-6 col-md-8">
 
-            <div class="card shadow-sm border-danger">
+            <div class="card shadow-sm border-0">
 
-                <div class="card-body text-center">
+                <div class="card-header bg-success text-white text-center py-3">
 
-                    <h2 class="text-danger mb-4">
+                    <h4 class="mb-0">
                         حذف الخدمة
-                    </h2>
+                    </h4>
 
-                    <p class="mb-4">
+                </div>
+
+                <div class="card-body text-center p-4">
+
+                    <p class="fs-5 mb-4">
                         هل أنت متأكد من حذف هذه الخدمة؟
                     </p>
 
-                    <div class="mb-4">
+                    <div class="alert alert-light border mb-4">
 
                         <h5 class="mb-3">
                             @Model.Name
                         </h5>
 
-                        <p class="mb-1">
+                        <p class="mb-2">
                             <strong>الوصف:</strong>
                             @Model.Description
                         </p>
 
-                        <p class="mb-1">
+                        <p class="mb-0">
                             <strong>الإدارة:</strong>
                             @Model.Department?.Name
                         </p>
@@ -42,12 +46,13 @@
 
                     <form asp-action="Delete">
 
-                        <input type="hidden" asp-for="Id" />
+                        <input type="hidden"
+                               asp-for="Id" />
 
                         <div class="d-flex justify-content-between">
 
                             <a asp-action="Index"
-                               class="btn btn-secondary">
+                               class="btn btn-warning">
                                 رجوع
                             </a>
 

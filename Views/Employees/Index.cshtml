@@ -4,72 +4,72 @@
     ViewData["Title"] = "الموظفين";
 }
 
-<div class="d-flex justify-content-between align-items-center mb-3">
+<div class="container py-4">
 
-    <h2>الموظفين</h2>
+    <div class="row justify-content-center">
 
-    <a asp-action="Create" class="btn btn-primary">
-        إضافة موظف
-    </a>
+        <div class="col-lg-10">
 
-</div>
+            <div class="d-flex justify-content-between align-items-center mb-4">
 
-<div class="card shadow-sm">
+                <h2 class="mb-0">الموظفين</h2>
 
-    <div class="card-body">
+                <a asp-action="Create"
+                   class="btn btn-success">
+                    إضافة موظف +
+                </a>
 
-        <div class="table-responsive">
+            </div>
 
-            <table class="table table-striped table-hover align-middle text-center">
+            <div class="table-responsive">
 
-                <thead class="table-dark">
+                <table class="table table-striped table-hover align-middle text-center">
 
-                    <tr>
-                        <th>الرقم</th>
-                        <th>اسم الموظف</th>
-                        <th>المسمى الوظيفي</th>
-                        <th>الإدارة</th>
-                        <th>الإجراءات</th>
-                    </tr>
-
-                </thead>
-
-                <tbody>
-
-                    @foreach (var employee in Model)
-                    {
+                    <thead>
                         <tr>
-
-                            <td>@employee.Id</td>
-
-                            <td>@employee.Name</td>
-
-                            <td>@employee.JobTitle</td>
-
-                            <td>@employee.Department?.Name</td>
-
-                            <td>
-
-                                <a asp-action="Edit"
-                                   asp-route-id="@employee.Id"
-                                   class="btn btn-warning btn-sm">
-                                    تعديل
-                                </a>
-
-                                <a asp-action="Delete"
-                                   asp-route-id="@employee.Id"
-                                   class="btn btn-danger btn-sm">
-                                    حذف
-                                </a>
-
-                            </td>
-
+                            <th class="bg-success text-white">الرقم</th>
+                            <th class="bg-success text-white">اسم الموظف</th>
+                            <th class="bg-success text-white">المسمى الوظيفي</th>
+                            <th class="bg-success text-white">الإدارة</th>
+                            <th class="bg-success text-white">الإجراءات</th>
                         </tr>
-                    }
+                    </thead>
 
-                </tbody>
+                    <tbody>
 
-            </table>
+                        @foreach (var employee in Model)
+                        {
+                            <tr>
+
+                                <td>@employee.Id</td>
+                                <td>@employee.Name</td>
+                                <td>@employee.JobTitle</td>
+                                <td>@employee.Department?.Name</td>
+
+                                <td>
+
+                                    <a asp-action="Edit"
+                                       asp-route-id="@employee.Id"
+                                       class="btn btn-warning btn-sm">
+                                        تعديل
+                                    </a>
+
+                                    <a asp-action="Delete"
+                                       asp-route-id="@employee.Id"
+                                       class="btn btn-danger btn-sm">
+                                        حذف
+                                    </a>
+
+                                </td>
+
+                            </tr>
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
 
         </div>
 

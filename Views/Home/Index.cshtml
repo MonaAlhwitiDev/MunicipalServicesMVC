@@ -2,66 +2,155 @@
     ViewData["Title"] = "الرئيسية";
 }
 
-<div class="container mt-4">
+<div class="container py-4">
 
     <div class="text-center mb-5">
-        <h1 class="display-6 fw-bold">نظام إدارة الخدمات البلدية</h1>
-        <p class="lead text-muted">
-            نظام لإدارة الإدارات والموظفين والخدمات البلدية
+
+        <h1 class="fw-bold mb-3">
+            لوحة التحكم
+        </h1>
+
+        <p class="text-muted">
+            نظرة عامة على بيانات نظام إدارة الخدمات البلدية
         </p>
+
     </div>
 
-    <div class="row g-4">
+    <div class="row g-4 justify-content-center">
 
-        <div class="col-md-4">
-            <div class="card h-100 shadow-sm">
-                <div class="card-body text-center">
-                    <h5 class="card-title">الإدارات</h5>
-                    <p class="card-text">
-                        عرض وإدارة الإدارات الموجودة في النظام.
+
+        <!-- الإدارات -->
+        <div class="col-lg-4 col-md-6">
+
+            <div class="card h-100 shadow-sm border-0 text-center">
+
+                <div class="card-body p-4">
+
+                    <div class="text-warning mb-3">
+
+                        <svg width="55"
+                             height="55"
+                             viewBox="0 0 16 16"
+                             fill="currentColor">
+
+                            <path d="M1 15V3h6v12H1zm8 0V0h6v15H9zM3 5h2V4H3v1zm0 3h2V7H3v1zm0 3h2v-1H3v1zm8-8h2V2h-2v1zm0 3h2V5h-2v1zm0 3h2V8h-2v1zm0 3h2v-1h-2v1z" />
+
+                        </svg>
+
+                    </div>
+
+                    <h4 class="mb-3">
+                        الإدارات
+                    </h4>
+
+                    <h2 class="fw-bold text-success mb-3">
+                        @ViewBag.DepartmentsCount
+                    </h2>
+
+                    <p class="text-muted mb-4">
+                        إجمالي الإدارات الموجودة في النظام
                     </p>
 
                     <a asp-controller="Departments"
                        asp-action="Index"
-                       class="btn btn-primary">
+                       class="btn btn-success">
                         عرض الإدارات
                     </a>
+
                 </div>
+
             </div>
+
         </div>
 
-        <div class="col-md-4">
-            <div class="card h-100 shadow-sm">
-                <div class="card-body text-center">
-                    <h5 class="card-title">الموظفين</h5>
-                    <p class="card-text">
-                        عرض وإدارة بيانات الموظفين.
+
+        <!-- الموظفين -->
+        <div class="col-lg-4 col-md-6">
+
+            <div class="card h-100 shadow-sm border-0 text-center">
+
+                <div class="card-body p-4">
+
+                    <div class="text-warning mb-3">
+
+                        <svg width="55"
+                             height="55"
+                             viewBox="0 0 16 16"
+                             fill="currentColor">
+
+                            <path d="M5.5 7a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm5-1a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5zM0 14s0-4 5.5-4S11 14 11 14H0zm9.5-6c3.5 0 5.5 2 5.5 5h-3c-.2-1.7-.8-3-2.5-4V8z" />
+
+                        </svg>
+
+                    </div>
+
+                    <h4 class="mb-3">
+                        الموظفين
+                    </h4>
+
+                    <h2 class="fw-bold text-success mb-3">
+                        @ViewBag.EmployeesCount
+                    </h2>
+
+                    <p class="text-muted mb-4">
+                        إجمالي الموظفين الموجودين في النظام
                     </p>
 
                     <a asp-controller="Employees"
                        asp-action="Index"
-                       class="btn btn-primary">
+                       class="btn btn-success">
                         عرض الموظفين
                     </a>
+
                 </div>
+
             </div>
+
         </div>
 
-        <div class="col-md-4">
-            <div class="card h-100 shadow-sm">
-                <div class="card-body text-center">
-                    <h5 class="card-title">الخدمات</h5>
-                    <p class="card-text">
-                        عرض وإدارة الخدمات البلدية.
+
+        <!-- الخدمات -->
+        <div class="col-lg-4 col-md-6">
+
+            <div class="card h-100 shadow-sm border-0 text-center">
+
+                <div class="card-body p-4">
+
+                    <div class="text-warning mb-3">
+
+                        <svg width="55"
+                             height="55"
+                             viewBox="0 0 16 16"
+                             fill="currentColor">
+
+                            <path d="M2 3h2v2H2V3zm4 0h8v2H6V3zM2 7h2v2H2V7zm4 0h8v2H6V7zm-4 4h2v2H2v-2zm4 0h8v2H6v-2z" />
+
+                        </svg>
+
+                    </div>
+
+                    <h4 class="mb-3">
+                        الخدمات
+                    </h4>
+
+                    <h2 class="fw-bold text-success mb-3">
+                        @ViewBag.ServicesCount
+                    </h2>
+
+                    <p class="text-muted mb-4">
+                        إجمالي الخدمات الموجودة في النظام
                     </p>
 
                     <a asp-controller="Services"
                        asp-action="Index"
-                       class="btn btn-primary">
+                       class="btn btn-success">
                         عرض الخدمات
                     </a>
+
                 </div>
+
             </div>
+
         </div>
 
     </div>

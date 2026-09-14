@@ -4,19 +4,23 @@
     ViewData["Title"] = "تعديل الإدارة";
 }
 
-<div class="container mt-4">
+<div class="container py-4">
 
     <div class="row justify-content-center">
 
-        <div class="col-md-6">
+        <div class="col-lg-6 col-md-8">
 
-            <div class="card shadow-sm">
+            <div class="card shadow-sm border-0">
 
-                <div class="card-body">
+                <div class="card-header bg-success text-white text-center py-3">
 
-                    <h2 class="text-center mb-4">
+                    <h4 class="mb-0">
                         تعديل بيانات الإدارة
-                    </h2>
+                    </h4>
+
+                </div>
+
+                <div class="card-body p-4">
 
                     <form asp-action="Edit">
 
@@ -24,12 +28,13 @@
                              class="text-danger mb-3">
                         </div>
 
-                        <input type="hidden" asp-for="Id" />
+                        <input type="hidden"
+                               asp-for="Id" />
 
-                        <div class="mb-3">
+                        <div class="mb-4">
 
                             <label asp-for="Name"
-                                   class="form-label">
+                                   class="form-label fw-bold">
                                 اسم الإدارة
                             </label>
 
@@ -45,12 +50,12 @@
                         <div class="d-flex justify-content-between">
 
                             <a asp-action="Index"
-                               class="btn btn-secondary">
+                               class="btn btn-warning">
                                 رجوع
                             </a>
 
                             <button type="submit"
-                                    class="btn btn-warning">
+                                    class="btn btn-success">
                                 حفظ التعديلات
                             </button>
 
