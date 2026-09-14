@@ -13,12 +13,16 @@
     <None Remove="Views\Employees\" />
     <None Remove="Views\Services\" />
     <None Remove="Views\Departments\" />
+    <None Remove="Views\Account\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Data\" />
     <Folder Include="Views\Employees\" />
     <Folder Include="Views\Services\" />
     <Folder Include="Views\Departments\" />
+    <Folder Include="Views\Account\" />
+    <Folder Include="wwwroot\sbadmin\" />
+    <Folder Include="wwwroot\images\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.20">
@@ -26,5 +30,9 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.20" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Remove="wwwroot\sbadmin\" />
+    <Content Remove="wwwroot\images\" />
   </ItemGroup>
 </Project>
