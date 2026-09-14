@@ -1,107 +1,156 @@
 ﻿<!DOCTYPE html>
+
 <html lang="ar" dir="rtl">
+
 <head>
+
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>@ViewData["Title"] - نظام إدارة الخدمات البلدية</title>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0" />
 
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/MunicipalServicesMVC.styles.css" asp-append-version="true" />
+    <title>
+        @ViewData["Title"] - نظام إدارة الخدمات البلدية
+    </title>
+
+    <!-- Bootstrap فقط -->
+    <link rel="stylesheet"
+          href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
 </head>
 
-<body>
 
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-light bg-light border-bottom shadow-sm mb-3">
+<body class="bg-light">
 
-            <div class="container-fluid">
 
-                <a class="navbar-brand fw-bold"
-                   asp-controller="Home"
-                   asp-action="Index">
+    <!-- الشريط العلوي -->
+    <nav class="navbar navbar-dark bg-success shadow-sm">
+
+        <div class="container-fluid">
+
+            <a class="navbar-brand d-flex align-items-center gap-3"
+               asp-controller="Home"
+               asp-action="Index">
+
+                <img src="/images/tabuk-logo.png"
+                     alt="شعار أمانة منطقة تبوك"
+                     width="55" />
+
+                <span class="fw-bold fs-4">
                     نظام إدارة الخدمات البلدية
-                </a>
+                </span>
 
-                <button class="navbar-toggler"
-                        type="button"
-                        data-bs-toggle="collapse"
-                        data-bs-target=".navbar-collapse"
-                        aria-controls="navbarSupportedContent"
-                        aria-expanded="false"
-                        aria-label="فتح القائمة">
+            </a>
 
-                    <span class="navbar-toggler-icon"></span>
+        </div>
 
-                </button>
+    </nav>
 
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-start">
 
-                    <ul class="navbar-nav flex-grow-1 gap-2">
+    <!-- الصفحة -->
+    <div class="container-fluid">
 
-                        <li class="nav-item">
-                            <a class="nav-link btn btn-outline-secondary px-3"
-                               asp-controller="Home"
-                               asp-action="Index">
-                                الرئيسية
-                            </a>
-                        </li>
+        <div class="row">
 
-                        <li class="nav-item">
-                            <a class="nav-link btn btn-outline-secondary px-3"
-                               asp-controller="Departments"
-                               asp-action="Index">
-                                الإدارات
-                            </a>
-                        </li>
 
-                        <li class="nav-item">
-                            <a class="nav-link btn btn-outline-secondary px-3"
-                               asp-controller="Employees"
-                               asp-action="Index">
-                                الموظفين
-                            </a>
-                        </li>
+            <!-- القائمة الجانبية -->
+            <aside class="col-md-3 col-lg-2 bg-success text-white min-vh-100 p-4">
 
-                        <li class="nav-item">
-                            <a class="nav-link btn btn-outline-secondary px-3"
-                               asp-controller="Services"
-                               asp-action="Index">
-                                الخدمات
-                            </a>
-                        </li>
+                <div class="text-center mb-4">
 
-                    </ul>
+                    <span class="fw-bold fs-4">
+                        القائمة الرئيسية
+                    </span>
 
                 </div>
 
-            </div>
 
-        </nav>
-    </header>
+                <nav class="nav flex-column">
 
-    <div class="container">
 
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
+                    <!-- الرئيسية -->
+                    <a asp-controller="Home"
+                       asp-action="Index"
+                       class="nav-link text-white rounded fs-5 fw-semibold py-3">
+
+                        🏠 الرئيسية
+
+                    </a>
+
+
+                    <!-- الإدارات -->
+                    <a asp-controller="Departments"
+                       asp-action="Index"
+                       class="nav-link text-white rounded fs-5 fw-semibold py-3">
+
+                        🏢 الإدارات
+
+                    </a>
+
+
+                    <!-- الموظفين -->
+                    <a asp-controller="Employees"
+                       asp-action="Index"
+                       class="nav-link text-white rounded fs-5 fw-semibold py-3">
+
+                        👥 الموظفين
+
+                    </a>
+
+
+                    <!-- الخدمات -->
+                    <a asp-controller="Services"
+                       asp-action="Index"
+                       class="nav-link text-white rounded fs-5 fw-semibold py-3">
+
+                        ☰ الخدمات
+
+                    </a>
+
+
+                    <!-- تسجيل الخروج -->
+                    <a asp-controller="Account"
+                       asp-action="Login"
+                       class="nav-link text-white rounded fs-5 fw-semibold py-3">
+
+                        ↪ تسجيل الخروج
+
+                    </a>
+
+
+                </nav>
+
+            </aside>
+
+
+            <!-- محتوى الصفحات -->
+            <main class="col-md-9 col-lg-10 p-4">
+
+                @RenderBody()
+
+            </main>
+
+
+        </div>
 
     </div>
 
-    <footer class="border-top text-muted mt-5 py-3">
 
-        <div class="container text-center">
-            &copy; 1448 - نظام إدارة الخدمات البلدية
-        </div>
+    <!-- الفوتر -->
+    <footer class="border-top bg-white text-muted text-center py-3">
+
+        ©️ 1448 - نظام إدارة الخدمات البلدية
 
     </footer>
 
+
+    <!-- JavaScript -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
 
     @await RenderSectionAsync("Scripts", required: false)
 
 </body>
+
 </html>
