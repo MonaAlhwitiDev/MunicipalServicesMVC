@@ -1,0 +1,85 @@
+﻿@model MunicipalServicesMVC.Models.RolePermissionsViewModel
+
+@{
+    ViewData["Title"] = "صلاحيات الدور";
+}
+
+<div class="container mt-4">
+
+    <h2 class="mb-2">صلاحيات الدور</h2>
+
+    <h5 class="text-muted mb-4">
+        @Model.RoleName
+    </h5>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+
+            <form asp-action="Permissions" method="post">
+
+                <input type="hidden"
+                       asp-for="RoleId" />
+
+                <h5 class="mb-3">
+                    اختر الصلاحيات
+                </h5>
+
+                @foreach (var permission in Model.Permissions)
+                {
+                    <div class="form-check mb-3">
+
+                        @if (Model.SelectedPermissionIds.Contains(permission.Id))
+                        {
+                            <input class="form-check-input"
+                                   type="checkbox"
+                                   name="SelectedPermissionIds"
+                                   value="@permission.Id"
+                                   id="permission-@permission.Id"
+                                   checked />
+                        }
+                        else
+                        {
+                            <input class="form-check-input"
+                                   type="checkbox"
+                                   name="SelectedPermissionIds"
+                                   value="@permission.Id"
+                                   id="permission-@permission.Id" />
+                        }
+
+                        <label class="form-check-label"
+                               for="permission-@permission.Id">
+
+                            <strong>@permission.Name</strong>
+
+                            @if (!string.IsNullOrEmpty(permission.Description))
+                            {
+                                <span class="text-muted">
+                                    - @permission.Description
+                                </span>
+                            }
+
+                        </label>
+
+                    </div>
+                }
+
+                <div class="mt-4">
+
+                    <button type="submit"
+                            class="btn btn-success">
+                        حفظ الصلاحيات
+                    </button>
+
+                    <a asp-action="Index"
+                       class="btn btn-warning">
+                        رجوع
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+</div>

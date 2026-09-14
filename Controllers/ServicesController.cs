@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MunicipalServicesMVC.Data;
@@ -6,6 +7,7 @@ using MunicipalServicesMVC.Models;
 
 namespace MunicipalServicesMVC.Controllers
 {
+    [Authorize]
     public class ServicesController : Controller
     {
         private readonly AppDbContext _db;
@@ -38,7 +40,7 @@ namespace MunicipalServicesMVC.Controllers
 
         public IActionResult Edit(int id)
         {
-            Service service = _db.Services.Find(id);
+            Service? service = _db.Services.Find(id);
 
             if (service == null)
             {
@@ -57,7 +59,7 @@ namespace MunicipalServicesMVC.Controllers
 
         public IActionResult Delete(int id)
         {
-            Service service = _db.Services
+            Service? service = _db.Services
                 .Include(s => s.Department)
                 .FirstOrDefault(s => s.Id == id);
 
@@ -70,6 +72,7 @@ namespace MunicipalServicesMVC.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Create(Service service)
         {
             if (ModelState.IsValid)
@@ -91,6 +94,7 @@ namespace MunicipalServicesMVC.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Edit(Service service)
         {
             if (ModelState.IsValid)
@@ -112,6 +116,7 @@ namespace MunicipalServicesMVC.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Delete(Service service)
         {
             _db.Services.Remove(service);

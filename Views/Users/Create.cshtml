@@ -1,0 +1,92 @@
+﻿@model MunicipalServicesMVC.Models.User
+
+@{
+    ViewData["Title"] = "إضافة مستخدم";
+}
+
+<div class="container mt-4">
+
+    <h2 class="mb-4">إضافة مستخدم جديد</h2>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+
+            <form asp-action="Create" method="post">
+
+                <div asp-validation-summary="ModelOnly"
+                     class="text-danger mb-3">
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Name"
+                           class="form-label">
+                    </label>
+
+                    <input asp-for="Name"
+                           class="form-control" />
+
+                    <span asp-validation-for="Name"
+                          class="text-danger">
+                    </span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Email"
+                           class="form-label">
+                    </label>
+
+                    <input asp-for="Email"
+                           class="form-control" />
+
+                    <span asp-validation-for="Email"
+                          class="text-danger">
+                    </span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Password"
+                           class="form-label">
+                    </label>
+
+                    <input asp-for="Password"
+                           type="password"
+                           class="form-control" />
+
+                    <span asp-validation-for="Password"
+                          class="text-danger">
+                    </span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="RoleId"
+                           class="form-label">
+                        الدور
+                    </label>
+
+                    <select asp-for="RoleId"
+                            asp-items="ViewBag.Roles"
+                            class="form-select">
+                        <option value="">اختر الدور</option>
+                    </select>
+
+                    <span asp-validation-for="RoleId"
+                          class="text-danger">
+                    </span>
+                </div>
+
+                <button type="submit"
+                        class="btn btn-success">
+                    حفظ
+                </button>
+
+                <a asp-action="Index"
+                   class="btn btn-warning">
+                    رجوع
+                </a>
+
+            </form>
+
+        </div>
+    </div>
+
+</div>

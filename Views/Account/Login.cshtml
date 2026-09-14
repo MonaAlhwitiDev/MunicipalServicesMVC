@@ -8,16 +8,19 @@
 
 <head>
     <meta charset="utf-8" />
+
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0" />
 
-    <title>@ViewData["Title"] - نظام إدارة الخدمات البلدية</title>
+    <title>
+        @ViewData["Title"] - نظام إدارة الخدمات البلدية
+    </title>
 
     <link rel="stylesheet"
           href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
 </head>
 
-<body class="bg-light">
+<body class="bg-success">
 
     <div class="container">
 
@@ -42,65 +45,59 @@
 
                         </div>
 
-                        <div class="mb-3">
+                        @if (ViewBag.Error != null)
+                        {
+                            <div class="alert alert-danger text-center">
+                                @ViewBag.Error
+                            </div>
+                        }
 
-                            <label for="inputEmail"
-                                   class="form-label fw-bold">
-                                البريد الإلكتروني
-                            </label>
+                        <form asp-controller="Account"
+                              asp-action="Login"
+                              method="post">
 
-                            <input id="inputEmail"
-                                   type="email"
-                                   class="form-control"
-                                   placeholder="أدخل البريد الإلكتروني" />
+                            <div class="mb-3">
 
-                        </div>
+                                <label for="email"
+                                       class="form-label fw-bold">
+                                    البريد الإلكتروني
+                                </label>
 
-                        <div class="mb-3">
+                                <input id="email"
+                                       name="email"
+                                       type="email"
+                                       class="form-control"
+                                       placeholder="أدخل البريد الإلكتروني"
+                                       required />
 
-                            <label for="inputPassword"
-                                   class="form-label fw-bold">
-                                كلمة المرور
-                            </label>
+                            </div>
 
-                            <input id="inputPassword"
-                                   type="password"
-                                   class="form-control"
-                                   placeholder="أدخل كلمة المرور" />
+                            <div class="mb-4">
 
-                        </div>
+                                <label for="password"
+                                       class="form-label fw-bold">
+                                    كلمة المرور
+                                </label>
 
-                        <div class="d-flex align-items-center gap-2 mb-3">
+                                <input id="password"
+                                       name="password"
+                                       type="password"
+                                       class="form-control"
+                                       placeholder="أدخل كلمة المرور"
+                                       required />
 
-                            <input id="inputRememberPassword"
-                                   type="checkbox"
-                                   class="form-check-input m-0" />
+                            </div>
 
-                            <label for="inputRememberPassword"
-                                   class="form-check-label">
-                                تذكرني
-                            </label>
+                            <div class="text-center">
 
-                        </div>
+                                <button type="submit"
+                                        class="btn btn-success px-5">
+                                    تسجيل الدخول
+                                </button>
 
-                        <div class="text-center mb-3">
+                            </div>
 
-                            <a href="#"
-                               class="text-warning text-decoration-none">
-                                نسيت كلمة المرور؟
-                            </a>
-
-                        </div>
-
-                        <div class="text-center">
-
-                            <a asp-controller="Home"
-                               asp-action="Index"
-                               class="btn btn-success px-4">
-                                تسجيل الدخول
-                            </a>
-
-                        </div>
+                        </form>
 
                     </div>
 

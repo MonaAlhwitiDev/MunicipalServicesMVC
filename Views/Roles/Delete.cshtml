@@ -1,0 +1,47 @@
+﻿@model MunicipalServicesMVC.Models.Role
+
+@{
+    ViewData["Title"] = "حذف الدور";
+}
+
+<div class="container mt-4">
+
+    <h2 class="mb-4">حذف الدور</h2>
+
+    <div class="card border-danger shadow-sm">
+        <div class="card-body">
+
+            <h5 class="text-danger mb-4">
+                هل أنت متأكد من حذف هذا الدور؟
+            </h5>
+
+            <div class="mb-3">
+                <strong>اسم الدور:</strong>
+                <span>@Model.Name</span>
+            </div>
+
+            <div class="mb-4">
+                <strong>الوصف:</strong>
+                <span>@Model.Description</span>
+            </div>
+
+            <form asp-action="Delete" method="post">
+
+                <input type="hidden" asp-for="Id" />
+
+                <button type="submit"
+                        class="btn btn-danger">
+                    حذف
+                </button>
+
+                <a asp-action="Index"
+                   class="btn btn-warning">
+                    رجوع
+                </a>
+
+            </form>
+
+        </div>
+    </div>
+
+</div>

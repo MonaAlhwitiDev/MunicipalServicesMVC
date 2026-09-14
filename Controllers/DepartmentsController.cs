@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MunicipalServicesMVC.Data;
 using MunicipalServicesMVC.Models;
 
 namespace MunicipalServicesMVC.Controllers
 {
+    [Authorize]
     public class DepartmentsController : Controller
     {
         private readonly AppDbContext _db;
@@ -92,4 +94,3 @@ namespace MunicipalServicesMVC.Controllers
         }
     }
 }
-

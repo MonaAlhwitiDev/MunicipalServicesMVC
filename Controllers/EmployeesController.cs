@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MunicipalServicesMVC.Data;
@@ -6,6 +7,7 @@ using MunicipalServicesMVC.Models;
 
 namespace MunicipalServicesMVC.Controllers
 {
+    [Authorize]
     public class EmployeesController : Controller
     {
         private readonly AppDbContext _db;
@@ -37,6 +39,7 @@ namespace MunicipalServicesMVC.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Create(Employee employee)
         {
             if (ModelState.IsValid)
@@ -77,6 +80,7 @@ namespace MunicipalServicesMVC.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Edit(Employee employee)
         {
             if (ModelState.IsValid)
@@ -112,6 +116,7 @@ namespace MunicipalServicesMVC.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Delete(Employee employee)
         {
             _db.Employees.Remove(employee);

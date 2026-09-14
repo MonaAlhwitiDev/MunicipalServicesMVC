@@ -73,7 +73,7 @@
                        asp-action="Index"
                        class="nav-link text-white rounded fs-5 fw-semibold py-3">
 
-                        🏠 الرئيسية
+                        الرئيسية
 
                     </a>
 
@@ -83,7 +83,7 @@
                        asp-action="Index"
                        class="nav-link text-white rounded fs-5 fw-semibold py-3">
 
-                        🏢 الإدارات
+                        الإدارات
 
                     </a>
 
@@ -93,7 +93,7 @@
                        asp-action="Index"
                        class="nav-link text-white rounded fs-5 fw-semibold py-3">
 
-                        👥 الموظفين
+                        الموظفين
 
                     </a>
 
@@ -103,17 +103,50 @@
                        asp-action="Index"
                        class="nav-link text-white rounded fs-5 fw-semibold py-3">
 
-                        ☰ الخدمات
+                        الخدمات
 
                     </a>
 
 
+                    @if (User.IsInRole("مدير النظام"))
+                    {
+                        <!-- المستخدمين -->
+                        <a asp-controller="Users"
+                           asp-action="Index"
+                           class="nav-link text-white rounded fs-5 fw-semibold py-3">
+
+                            المستخدمين
+
+                        </a>
+
+
+                        <!-- الأدوار -->
+                        <a asp-controller="Roles"
+                           asp-action="Index"
+                           class="nav-link text-white rounded fs-5 fw-semibold py-3">
+
+                            الأدوار
+
+                        </a>
+
+
+                        <!-- الصلاحيات -->
+                        <a asp-controller="Permissions"
+                           asp-action="Index"
+                           class="nav-link text-white rounded fs-5 fw-semibold py-3">
+
+                            الصلاحيات
+
+                        </a>
+                    }
+
+
                     <!-- تسجيل الخروج -->
                     <a asp-controller="Account"
-                       asp-action="Login"
+                       asp-action="Logout"
                        class="nav-link text-white rounded fs-5 fw-semibold py-3">
 
-                        ↪ تسجيل الخروج
+                        تسجيل الخروج
 
                     </a>
 
@@ -139,7 +172,7 @@
     <!-- الفوتر -->
     <footer class="border-top bg-white text-muted text-center py-3">
 
-        ©️ 1448 - نظام إدارة الخدمات البلدية
+        1448 - نظام إدارة الخدمات البلدية
 
     </footer>
 

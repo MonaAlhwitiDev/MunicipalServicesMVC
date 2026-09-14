@@ -14,6 +14,9 @@
     <None Remove="Views\Services\" />
     <None Remove="Views\Departments\" />
     <None Remove="Views\Account\" />
+    <None Remove="Views\Roles\" />
+    <None Remove="Views\Permissions\" />
+    <None Remove="Views\Users\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Data\" />
@@ -23,6 +26,9 @@
     <Folder Include="Views\Account\" />
     <Folder Include="wwwroot\sbadmin\" />
     <Folder Include="wwwroot\images\" />
+    <Folder Include="Views\Roles\" />
+    <Folder Include="Views\Permissions\" />
+    <Folder Include="Views\Users\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.20">
