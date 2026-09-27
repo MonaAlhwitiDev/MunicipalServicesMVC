@@ -3,19 +3,18 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using MunicipalServicesMVC.Data;
 using MunicipalServicesMVC.Models;
+using MunicipalServicesMVC.Repositories;
 
 namespace MunicipalServicesMVC.Controllers
 {
     public class AccountController : Controller
     {
-        private readonly AppDbContext _db;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public AccountController(AppDbContext db)
+        public AccountController(IUnitOfWork unitOfWork)
         {
-            _db = db;
+            _unitOfWork = unitOfWork;
         }
 
         // =========================
@@ -36,10 +35,9 @@ namespace MunicipalServicesMVC.Controllers
             string email,
             string password)
         {
-            var user = _db.Users
-                .Include(u => u.Role)
-                .Include(u => u.Employee)
-                .FirstOrDefault(u => u.Email == email);
+            var user =
+                _unitOfWork.Users
+                           .GetByEmailWithRoleAndEmployee(email);
 
             if (user == null)
             {
@@ -75,12 +73,12 @@ namespace MunicipalServicesMVC.Controllers
 
             if (user.EmployeeId.HasValue)
             {
-                employeeImage = _db.EmployeeFiles
-                    .Where(f =>
-                        f.EmployeeId == user.EmployeeId.Value)
-                    .OrderByDescending(f => f.Id)
-                    .Select(f => f.FileURL)
-                    .FirstOrDefault();
+                employeeImage =
+                    _unitOfWork.Employees
+                               .GetFiles(user.EmployeeId.Value)
+                               .OrderByDescending(f => f.Id)
+                               .Select(f => f.FileURL)
+                               .FirstOrDefault();
             }
 
             // =========================
@@ -144,22 +142,24 @@ namespace MunicipalServicesMVC.Controllers
                     )
                 );
 
-                var permissions =
-                    _db.RolePermissions
-                        .Include(rp => rp.Permission)
-                        .Where(rp =>
-                            rp.RoleId == user.RoleId)
-                        .ToList();
+                var rolePermissions =
+                    _unitOfWork.Roles
+                               .GetRolePermissions(user.RoleId);
 
-                foreach (
-                    var rolePermission in permissions)
+                foreach (var rolePermission in rolePermissions)
                 {
-                    if (rolePermission.Permission != null)
+                    var permission =
+                        _unitOfWork.Permissions
+                                   .GetById(
+                                       rolePermission.PermissionId
+                                   );
+
+                    if (permission != null)
                     {
                         claims.Add(
                             new Claim(
                                 "Permission",
-                                rolePermission.Permission.Name
+                                permission.Name
                             )
                         );
                     }

@@ -1,27 +1,38 @@
 ﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MunicipalServicesMVC.Data;
 using MunicipalServicesMVC.Models;
+using MunicipalServicesMVC.Repositories;
 
 namespace MunicipalServicesMVC.Controllers
 {
     [Authorize]
     public class HomeController : Controller
     {
-        private readonly AppDbContext _db;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public HomeController(AppDbContext db)
+        public HomeController(IUnitOfWork unitOfWork)
         {
-            _db = db;
+            _unitOfWork = unitOfWork;
         }
 
         // عرض لوحة التحكم
         public IActionResult Index()
         {
-            ViewBag.DepartmentsCount = _db.Departments.Count();
-            ViewBag.EmployeesCount = _db.Employees.Count();
-            ViewBag.ServicesCount = _db.Services.Count();
+            ViewBag.DepartmentsCount =
+                _unitOfWork.Departments
+                           .GetAll()
+                           .Count();
+
+            ViewBag.EmployeesCount =
+                _unitOfWork.Employees
+                           .GetAllWithDepartment()
+                           .Count();
+
+            ViewBag.ServicesCount =
+                _unitOfWork.Services
+                           .GetAllWithDepartment()
+                           .Count();
 
             return View();
         }

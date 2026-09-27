@@ -2,20 +2,19 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using MunicipalServicesMVC.Data;
 using MunicipalServicesMVC.Models;
+using MunicipalServicesMVC.Repositories;
 
 namespace MunicipalServicesMVC.Controllers
 {
     [Authorize(Roles = "مدير النظام")]
     public class UsersController : Controller
     {
-        private readonly AppDbContext _db;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public UsersController(AppDbContext db)
+        public UsersController(IUnitOfWork unitOfWork)
         {
-            _db = db;
+            _unitOfWork = unitOfWork;
         }
 
         // =========================
@@ -23,10 +22,8 @@ namespace MunicipalServicesMVC.Controllers
         // =========================
         public IActionResult Index()
         {
-            var users = _db.Users
-                .Include(u => u.Role)
-                .Include(u => u.Employee)
-                .ToList();
+            var users =
+                _unitOfWork.Users.GetAllWithRoleAndEmployee();
 
             return View(users);
         }
@@ -37,13 +34,15 @@ namespace MunicipalServicesMVC.Controllers
         public IActionResult Create()
         {
             ViewBag.Roles = new SelectList(
-                _db.Roles,
+                _unitOfWork.Roles.GetAll(),
                 "Id",
                 "Name"
             );
 
             ViewBag.Employees = new SelectList(
-                _db.Employees.OrderBy(e => e.Name),
+                _unitOfWork.Employees
+                           .GetAllWithDepartment()
+                           .OrderBy(e => e.Name),
                 "Id",
                 "Name"
             );
@@ -60,28 +59,32 @@ namespace MunicipalServicesMVC.Controllers
         {
             if (ModelState.IsValid)
             {
-                var passwordHasher = new PasswordHasher<User>();
+                var passwordHasher =
+                    new PasswordHasher<User>();
 
-                user.Password = passwordHasher.HashPassword(
-                    user,
-                    user.Password
-                );
+                user.Password =
+                    passwordHasher.HashPassword(
+                        user,
+                        user.Password
+                    );
 
-                _db.Users.Add(user);
-                _db.SaveChanges();
+                _unitOfWork.Users.Add(user);
+                _unitOfWork.Save();
 
                 return RedirectToAction(nameof(Index));
             }
 
             ViewBag.Roles = new SelectList(
-                _db.Roles,
+                _unitOfWork.Roles.GetAll(),
                 "Id",
                 "Name",
                 user.RoleId
             );
 
             ViewBag.Employees = new SelectList(
-                _db.Employees.OrderBy(e => e.Name),
+                _unitOfWork.Employees
+                           .GetAllWithDepartment()
+                           .OrderBy(e => e.Name),
                 "Id",
                 "Name",
                 user.EmployeeId
@@ -95,7 +98,8 @@ namespace MunicipalServicesMVC.Controllers
         // =========================
         public IActionResult Edit(int id)
         {
-            var user = _db.Users.Find(id);
+            var user =
+                _unitOfWork.Users.GetById(id);
 
             if (user == null)
             {
@@ -103,14 +107,16 @@ namespace MunicipalServicesMVC.Controllers
             }
 
             ViewBag.Roles = new SelectList(
-                _db.Roles,
+                _unitOfWork.Roles.GetAll(),
                 "Id",
                 "Name",
                 user.RoleId
             );
 
             ViewBag.Employees = new SelectList(
-                _db.Employees.OrderBy(e => e.Name),
+                _unitOfWork.Employees
+                           .GetAllWithDepartment()
+                           .OrderBy(e => e.Name),
                 "Id",
                 "Name",
                 user.EmployeeId
@@ -136,7 +142,8 @@ namespace MunicipalServicesMVC.Controllers
 
             if (ModelState.IsValid)
             {
-                var existingUser = _db.Users.Find(id);
+                var existingUser =
+                    _unitOfWork.Users.GetById(id);
 
                 if (existingUser == null)
                 {
@@ -146,24 +153,24 @@ namespace MunicipalServicesMVC.Controllers
                 existingUser.Name = user.Name;
                 existingUser.Email = user.Email;
                 existingUser.RoleId = user.RoleId;
-
-                // ربط حساب المستخدم بالموظف
                 existingUser.EmployeeId = user.EmployeeId;
 
-                _db.SaveChanges();
+                _unitOfWork.Save();
 
                 return RedirectToAction(nameof(Index));
             }
 
             ViewBag.Roles = new SelectList(
-                _db.Roles,
+                _unitOfWork.Roles.GetAll(),
                 "Id",
                 "Name",
                 user.RoleId
             );
 
             ViewBag.Employees = new SelectList(
-                _db.Employees.OrderBy(e => e.Name),
+                _unitOfWork.Employees
+                           .GetAllWithDepartment()
+                           .OrderBy(e => e.Name),
                 "Id",
                 "Name",
                 user.EmployeeId
@@ -177,10 +184,9 @@ namespace MunicipalServicesMVC.Controllers
         // =========================
         public IActionResult Delete(int id)
         {
-            var user = _db.Users
-                .Include(u => u.Role)
-                .Include(u => u.Employee)
-                .FirstOrDefault(u => u.Id == id);
+            var user =
+                _unitOfWork.Users
+                           .GetByIdWithRoleAndEmployee(id);
 
             if (user == null)
             {
@@ -197,12 +203,13 @@ namespace MunicipalServicesMVC.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)
         {
-            var user = _db.Users.Find(id);
+            var user =
+                _unitOfWork.Users.GetById(id);
 
             if (user != null)
             {
-                _db.Users.Remove(user);
-                _db.SaveChanges();
+                _unitOfWork.Users.Delete(user);
+                _unitOfWork.Save();
             }
 
             return RedirectToAction(nameof(Index));

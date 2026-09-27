@@ -1,28 +1,25 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using MunicipalServicesMVC.Data;
 using MunicipalServicesMVC.Models;
+using MunicipalServicesMVC.Repositories;
 
 namespace MunicipalServicesMVC.Controllers
 {
     [Authorize]
     public class ServicesController : Controller
     {
-        private readonly AppDbContext _db;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public ServicesController(AppDbContext db)
+        public ServicesController(IUnitOfWork unitOfWork)
         {
-            _db = db;
+            _unitOfWork = unitOfWork;
         }
 
         public IActionResult Index()
         {
             IEnumerable<Service> services =
-                _db.Services
-                   .Include(s => s.Department)
-                   .ToList();
+                _unitOfWork.Services.GetAllWithDepartment();
 
             return View(services);
         }
@@ -30,7 +27,7 @@ namespace MunicipalServicesMVC.Controllers
         public IActionResult Create()
         {
             ViewBag.DepartmentId = new SelectList(
-                _db.Departments,
+                _unitOfWork.Departments.GetAll(),
                 "Id",
                 "Name"
             );
@@ -40,7 +37,8 @@ namespace MunicipalServicesMVC.Controllers
 
         public IActionResult Edit(int id)
         {
-            Service? service = _db.Services.Find(id);
+            Service? service =
+                _unitOfWork.Services.GetById(id);
 
             if (service == null)
             {
@@ -48,7 +46,7 @@ namespace MunicipalServicesMVC.Controllers
             }
 
             ViewBag.DepartmentId = new SelectList(
-                _db.Departments,
+                _unitOfWork.Departments.GetAll(),
                 "Id",
                 "Name",
                 service.DepartmentId
@@ -59,9 +57,8 @@ namespace MunicipalServicesMVC.Controllers
 
         public IActionResult Delete(int id)
         {
-            Service? service = _db.Services
-                .Include(s => s.Department)
-                .FirstOrDefault(s => s.Id == id);
+            Service? service =
+                _unitOfWork.Services.GetByIdWithDepartment(id);
 
             if (service == null)
             {
@@ -77,14 +74,14 @@ namespace MunicipalServicesMVC.Controllers
         {
             if (ModelState.IsValid)
             {
-                _db.Services.Add(service);
-                _db.SaveChanges();
+                _unitOfWork.Services.Add(service);
+                _unitOfWork.Save();
 
-                return RedirectToAction("Index");
+                return RedirectToAction(nameof(Index));
             }
 
             ViewBag.DepartmentId = new SelectList(
-                _db.Departments,
+                _unitOfWork.Departments.GetAll(),
                 "Id",
                 "Name",
                 service.DepartmentId
@@ -99,14 +96,14 @@ namespace MunicipalServicesMVC.Controllers
         {
             if (ModelState.IsValid)
             {
-                _db.Services.Update(service);
-                _db.SaveChanges();
+                _unitOfWork.Services.Update(service);
+                _unitOfWork.Save();
 
-                return RedirectToAction("Index");
+                return RedirectToAction(nameof(Index));
             }
 
             ViewBag.DepartmentId = new SelectList(
-                _db.Departments,
+                _unitOfWork.Departments.GetAll(),
                 "Id",
                 "Name",
                 service.DepartmentId
@@ -119,10 +116,18 @@ namespace MunicipalServicesMVC.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Delete(Service service)
         {
-            _db.Services.Remove(service);
-            _db.SaveChanges();
+            Service? existingService =
+                _unitOfWork.Services.GetById(service.Id);
 
-            return RedirectToAction("Index");
+            if (existingService == null)
+            {
+                return NotFound();
+            }
+
+            _unitOfWork.Services.Delete(existingService);
+            _unitOfWork.Save();
+
+            return RedirectToAction(nameof(Index));
         }
     }
 }

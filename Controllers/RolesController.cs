@@ -1,26 +1,25 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MunicipalServicesMVC.Data;
 using MunicipalServicesMVC.Models;
+using MunicipalServicesMVC.Repositories;
 
 namespace MunicipalServicesMVC.Controllers
 {
     [Authorize(Roles = "مدير النظام")]
     public class RolesController : Controller
     {
-        // الاتصال بقاعدة البيانات
-        private readonly AppDbContext _db;
+        private readonly IUnitOfWork _unitOfWork;
 
-        // Constructor
-        public RolesController(AppDbContext db)
+        public RolesController(IUnitOfWork unitOfWork)
         {
-            _db = db;
+            _unitOfWork = unitOfWork;
         }
 
         // عرض جميع الأدوار
         public IActionResult Index()
         {
-            var roles = _db.Roles.ToList();
+            var roles = _unitOfWork.Roles.GetAll();
+
             return View(roles);
         }
 
@@ -37,8 +36,8 @@ namespace MunicipalServicesMVC.Controllers
         {
             if (ModelState.IsValid)
             {
-                _db.Roles.Add(role);
-                _db.SaveChanges();
+                _unitOfWork.Roles.Add(role);
+                _unitOfWork.Save();
 
                 return RedirectToAction(nameof(Index));
             }
@@ -49,7 +48,7 @@ namespace MunicipalServicesMVC.Controllers
         // فتح صفحة تعديل الدور
         public IActionResult Edit(int id)
         {
-            var role = _db.Roles.Find(id);
+            var role = _unitOfWork.Roles.GetById(id);
 
             if (role == null)
             {
@@ -71,8 +70,8 @@ namespace MunicipalServicesMVC.Controllers
 
             if (ModelState.IsValid)
             {
-                _db.Roles.Update(role);
-                _db.SaveChanges();
+                _unitOfWork.Roles.Update(role);
+                _unitOfWork.Save();
 
                 return RedirectToAction(nameof(Index));
             }
@@ -83,7 +82,7 @@ namespace MunicipalServicesMVC.Controllers
         // فتح صفحة تأكيد الحذف
         public IActionResult Delete(int id)
         {
-            var role = _db.Roles.Find(id);
+            var role = _unitOfWork.Roles.GetById(id);
 
             if (role == null)
             {
@@ -98,12 +97,12 @@ namespace MunicipalServicesMVC.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)
         {
-            var role = _db.Roles.Find(id);
+            var role = _unitOfWork.Roles.GetById(id);
 
             if (role != null)
             {
-                _db.Roles.Remove(role);
-                _db.SaveChanges();
+                _unitOfWork.Roles.Delete(role);
+                _unitOfWork.Save();
             }
 
             return RedirectToAction(nameof(Index));
@@ -112,23 +111,21 @@ namespace MunicipalServicesMVC.Controllers
         // فتح صفحة ربط الدور بالصلاحيات
         public IActionResult Permissions(int id)
         {
-            var role = _db.Roles.Find(id);
+            var role = _unitOfWork.Roles.GetById(id);
 
             if (role == null)
             {
                 return NotFound();
             }
 
-            var selectedPermissionIds = _db.RolePermissions
-                .Where(rp => rp.RoleId == id)
-                .Select(rp => rp.PermissionId)
-                .ToList();
+            var selectedPermissionIds =
+                _unitOfWork.Roles.GetSelectedPermissionIds(id);
 
             var viewModel = new RolePermissionsViewModel
             {
                 RoleId = role.Id,
                 RoleName = role.Name,
-                Permissions = _db.Permissions.ToList(),
+                Permissions = _unitOfWork.Permissions.GetAll().ToList(),
                 SelectedPermissionIds = selectedPermissionIds
             };
 
@@ -140,25 +137,28 @@ namespace MunicipalServicesMVC.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Permissions(RolePermissionsViewModel model)
         {
-            var oldPermissions = _db.RolePermissions
-                .Where(rp => rp.RoleId == model.RoleId)
-                .ToList();
+            var oldPermissions =
+                _unitOfWork.Roles
+                           .GetRolePermissions(model.RoleId);
 
-            _db.RolePermissions.RemoveRange(oldPermissions);
+            _unitOfWork.Roles
+                       .DeleteRolePermissions(oldPermissions);
 
             if (model.SelectedPermissionIds != null)
             {
                 foreach (var permissionId in model.SelectedPermissionIds)
                 {
-                    _db.RolePermissions.Add(new RolePermission
-                    {
-                        RoleId = model.RoleId,
-                        PermissionId = permissionId
-                    });
+                    _unitOfWork.Roles.AddRolePermission(
+                        new RolePermission
+                        {
+                            RoleId = model.RoleId,
+                            PermissionId = permissionId
+                        }
+                    );
                 }
             }
 
-            _db.SaveChanges();
+            _unitOfWork.Save();
 
             return RedirectToAction(nameof(Index));
         }

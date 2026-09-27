@@ -2,10 +2,18 @@
 {
     public interface IUnitOfWork
     {
-        // Repository الخاص بالإدارات
         IDepartmentRepository Departments { get; }
 
-        // حفظ جميع التغييرات مرة واحدة
+        IEmployeeRepository Employees { get; }
+
+        IServiceRepository Services { get; }
+
+        IRoleRepository Roles { get; }
+
+        IPermissionRepository Permissions { get; }
+
+        IUserRepository Users { get; }
+
         void Save();
     }
 }

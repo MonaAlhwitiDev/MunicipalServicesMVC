@@ -1,142 +1,121 @@
 ﻿@model MunicipalServicesMVC.Models.EmployeeFile
 
 @{
-    ViewData["Title"] = "ملفات الموظف";
+    ViewData["Title"] = "إدارة ملفات الموظف";
 
-    var files = ViewBag.EmployeeFiles as List<MunicipalServicesMVC.Models.EmployeeFile>
-                ?? new List<MunicipalServicesMVC.Models.EmployeeFile>();
+    var employeeFiles =
+        ViewBag.EmployeeFiles as IEnumerable<MunicipalServicesMVC.Models.EmployeeFile>;
 }
 
-<div class="container mt-4" dir="rtl">
+<div class="container mt-4">
 
-    <div class="mb-4 text-center">
+    <div class="card shadow">
 
-        <h2>إدارة ملفات الموظف</h2>
-
-        <h5 class="mt-3">
-            الموظف:
-            <strong>@ViewBag.EmployeeName</strong>
-        </h5>
-
-    </div>
-
-    @if (TempData["FileError"] != null)
-    {
-        <div class="alert alert-danger text-center">
-            @TempData["FileError"]
-        </div>
-    }
-
-    <div class="card shadow-sm mb-4">
-
-        <div class="card-header">
-            <h5 class="mb-0">رفع صورة الموظف</h5>
+        <div class="card-header bg-success text-white text-center">
+            <h4 class="mb-0">
+                إدارة ملفات الموظف
+            </h4>
         </div>
 
         <div class="card-body">
 
-            <form method="post"
-                  asp-action="ManageFiles"
+            <h5 class="text-center mb-4">
+                الموظف: @ViewBag.EmployeeName
+            </h5>
+
+            @if (TempData["FileError"] != null)
+            {
+                <div class="alert alert-danger text-center">
+                    @TempData["FileError"]
+                </div>
+            }
+
+            <!-- رفع الملفات -->
+            <form asp-action="ManageFiles"
+                  method="post"
                   enctype="multipart/form-data">
 
                 @Html.AntiForgeryToken()
 
-                <input asp-for="EmployeeId"
-                       type="hidden"
-                       value="@ViewBag.EmployeeId" />
+                <input type="hidden"
+                       asp-for="EmployeeId" />
 
                 <div class="mb-3">
-
-                    <label class="form-label">
-                        اختر الصورة
+                    <label class="form-label fw-bold">
+                        اختر الملفات
                     </label>
 
-                    <div class="d-flex align-items-center gap-2">
-
-                        <label for="fileEmployee"
-                               class="btn btn-light border mb-0">
-                            اختيار ملف
-                        </label>
-
-                        <span id="fileName">
-                            لم يتم اختيار ملف
-                        </span>
-
-                        <input type="file"
-                               id="fileEmployee"
-                               name="fileEmployee"
-                               accept="image/*"
-                               hidden
-                               onchange="showFileName(this)" />
-
-                    </div>
-
+                    <input type="file"
+                           name="fileEmployees"
+                           class="form-control"
+                           multiple />
                 </div>
 
-                <button type="submit"
-                        class="btn btn-success">
-                    رفع الصورة
-                </button>
+                <div class="text-center">
+                    <button type="submit"
+                            class="btn btn-warning">
+                        رفع الملفات
+                    </button>
 
-                <a asp-action="Index"
-                   class="btn btn-warning">
-                    رجوع
-                </a>
+                    <a asp-action="Index"
+                       class="btn btn-success">
+                        رجوع
+                    </a>
+                </div>
 
             </form>
 
         </div>
-
     </div>
 
 
-    <div class="card shadow-sm">
+    <!-- الملفات المرفوعة -->
+    <div class="card shadow mt-4">
 
-        <div class="card-header">
-            <h5 class="mb-0">صور الموظف</h5>
+        <div class="card-header bg-success text-white text-center">
+            <h5 class="mb-0">
+                الملفات المرفوعة
+            </h5>
         </div>
 
         <div class="card-body">
 
-            @if (files.Count == 0)
-            {
-                <div class="alert alert-info text-center">
-                    لا توجد صورة للموظف حتى الآن.
-                </div>
-            }
-            else
+            @if (employeeFiles != null && employeeFiles.Any())
             {
                 <div class="table-responsive">
 
                     <table class="table table-striped table-hover align-middle text-center">
 
-                        <thead>
+                        <thead class="table-success">
+
                             <tr>
-                                <th>#</th>
                                 <th>اسم الملف</th>
-                                <th>الصورة</th>
-                                <th>الإجراءات</th>
+                                <th>معاينة</th>
+                                <th>العمليات</th>
                             </tr>
+
                         </thead>
 
                         <tbody>
 
-                            @foreach (var file in files)
+                            @foreach (var file in employeeFiles)
                             {
                                 <tr>
 
-                                    <td>@file.Id</td>
-
-                                    <td>@file.Name</td>
+                                    <td>
+                                        @file.Name
+                                    </td>
 
                                     <td>
-
-                                        <img src="@file.FileURL"
-                                             alt="صورة الموظف"
-                                             width="80"
-                                             height="80"
-                                             style="object-fit:cover;border-radius:50%;" />
-
+                                        @if (!string.IsNullOrEmpty(file.FileURL))
+                                        {
+                                            <img src="@file.FileURL"
+                                                 alt="ملف الموظف"
+                                                 style="width:80px;
+                                                        height:80px;
+                                                        object-fit:cover;
+                                                        border-radius:10px;" />
+                                        }
                                     </td>
 
                                     <td>
@@ -153,8 +132,8 @@
 
                                             <button type="submit"
                                                     class="btn btn-danger btn-sm"
-                                                    onclick="return confirm('هل أنت متأكد من حذف الصورة؟');">
-                                                حذف الصورة
+                                                    onclick="return confirm('هل أنت متأكد من حذف الملف؟');">
+                                                حذف
                                             </button>
 
                                         </form>
@@ -170,26 +149,14 @@
 
                 </div>
             }
+            else
+            {
+                <div class="alert alert-info text-center mb-0">
+                    لا توجد ملفات مرفوعة لهذا الموظف.
+                </div>
+            }
 
         </div>
-
     </div>
 
 </div>
-
-<script>function showFileName(input) {
-
-        const fileName =
-            document.getElementById("fileName");
-
-        if (input.files.length > 0) {
-
-            fileName.textContent =
-                input.files[0].name;
-
-        } else {
-
-            fileName.textContent =
-                "لم يتم اختيار ملف";
-        }
-    }</script>

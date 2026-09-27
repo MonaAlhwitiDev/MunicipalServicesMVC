@@ -1,20 +1,19 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using MunicipalServicesMVC.Data;
 using MunicipalServicesMVC.Models;
+using MunicipalServicesMVC.Repositories;
 
 namespace MunicipalServicesMVC.Controllers
 {
     [Authorize]
     public class EmployeesController : Controller
     {
-        private readonly AppDbContext _db;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public EmployeesController(AppDbContext db)
+        public EmployeesController(IUnitOfWork unitOfWork)
         {
-            _db = db;
+            _unitOfWork = unitOfWork;
         }
 
         // =========================
@@ -23,19 +22,10 @@ namespace MunicipalServicesMVC.Controllers
         public IActionResult Index()
         {
             IEnumerable<Employee> employees =
-                _db.Employees
-                   .Include(e => e.Department)
-                   .ToList();
+                _unitOfWork.Employees.GetAllWithDepartment();
 
-            // جلب آخر صورة مرفوعة لكل موظف
-            var employeeImages = _db.EmployeeFiles
-                .GroupBy(f => f.EmployeeId)
-                .ToDictionary(
-                    g => g.Key,
-                    g => g.OrderByDescending(f => f.Id)
-                          .First()
-                          .FileURL
-                );
+            var employeeImages =
+                _unitOfWork.Employees.GetLatestImages();
 
             ViewBag.EmployeeImages = employeeImages;
 
@@ -48,7 +38,7 @@ namespace MunicipalServicesMVC.Controllers
         public IActionResult Create()
         {
             ViewBag.DepartmentId = new SelectList(
-                _db.Departments,
+                _unitOfWork.Departments.GetAll(),
                 "Id",
                 "Name"
             );
@@ -65,14 +55,14 @@ namespace MunicipalServicesMVC.Controllers
         {
             if (ModelState.IsValid)
             {
-                _db.Employees.Add(employee);
-                _db.SaveChanges();
+                _unitOfWork.Employees.Add(employee);
+                _unitOfWork.Save();
 
-                return RedirectToAction("Index");
+                return RedirectToAction(nameof(Index));
             }
 
             ViewBag.DepartmentId = new SelectList(
-                _db.Departments,
+                _unitOfWork.Departments.GetAll(),
                 "Id",
                 "Name",
                 employee.DepartmentId
@@ -87,7 +77,7 @@ namespace MunicipalServicesMVC.Controllers
         public IActionResult Edit(int id)
         {
             Employee? employee =
-                _db.Employees.Find(id);
+                _unitOfWork.Employees.GetById(id);
 
             if (employee == null)
             {
@@ -95,7 +85,7 @@ namespace MunicipalServicesMVC.Controllers
             }
 
             ViewBag.DepartmentId = new SelectList(
-                _db.Departments,
+                _unitOfWork.Departments.GetAll(),
                 "Id",
                 "Name",
                 employee.DepartmentId
@@ -113,14 +103,14 @@ namespace MunicipalServicesMVC.Controllers
         {
             if (ModelState.IsValid)
             {
-                _db.Employees.Update(employee);
-                _db.SaveChanges();
+                _unitOfWork.Employees.Update(employee);
+                _unitOfWork.Save();
 
-                return RedirectToAction("Index");
+                return RedirectToAction(nameof(Index));
             }
 
             ViewBag.DepartmentId = new SelectList(
-                _db.Departments,
+                _unitOfWork.Departments.GetAll(),
                 "Id",
                 "Name",
                 employee.DepartmentId
@@ -135,9 +125,8 @@ namespace MunicipalServicesMVC.Controllers
         public IActionResult Delete(int id)
         {
             Employee? employee =
-                _db.Employees
-                   .Include(e => e.Department)
-                   .FirstOrDefault(e => e.Id == id);
+                _unitOfWork.Employees
+                           .GetByIdWithDepartment(id);
 
             if (employee == null)
             {
@@ -154,10 +143,18 @@ namespace MunicipalServicesMVC.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Delete(Employee employee)
         {
-            _db.Employees.Remove(employee);
-            _db.SaveChanges();
+            Employee? existingEmployee =
+                _unitOfWork.Employees.GetById(employee.Id);
 
-            return RedirectToAction("Index");
+            if (existingEmployee == null)
+            {
+                return NotFound();
+            }
+
+            _unitOfWork.Employees.Delete(existingEmployee);
+            _unitOfWork.Save();
+
+            return RedirectToAction(nameof(Index));
         }
 
         // =========================
@@ -167,8 +164,7 @@ namespace MunicipalServicesMVC.Controllers
         public IActionResult ManageFiles(int id)
         {
             Employee? employee =
-                _db.Employees
-                   .FirstOrDefault(e => e.Id == id);
+                _unitOfWork.Employees.GetById(id);
 
             if (employee == null)
             {
@@ -176,47 +172,47 @@ namespace MunicipalServicesMVC.Controllers
             }
 
             var files =
-                _db.EmployeeFiles
-                   .Where(f => f.EmployeeId == id)
-                   .ToList();
+                _unitOfWork.Employees
+                           .GetFiles(id)
+                           .ToList();
 
             ViewBag.EmployeeId = employee.Id;
             ViewBag.EmployeeName = employee.Name;
             ViewBag.EmployeeFiles = files;
 
-            EmployeeFile employeeFile = new EmployeeFile
-            {
-                EmployeeId = employee.Id
-            };
+            EmployeeFile employeeFile =
+                new EmployeeFile
+                {
+                    EmployeeId = employee.Id
+                };
 
             return View(employeeFile);
         }
 
         // =========================
         // Manage Files - POST
+        // رفع ملفات متعددة
         // =========================
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult ManageFiles(
             EmployeeFile employeeFile,
-            IFormFile fileEmployee)
+            List<IFormFile> fileEmployees)
         {
             Employee? employee =
-                _db.Employees
-                   .FirstOrDefault(
-                       e => e.Id == employeeFile.EmployeeId
-                   );
+                _unitOfWork.Employees
+                           .GetById(employeeFile.EmployeeId);
 
             if (employee == null)
             {
                 return NotFound();
             }
 
-            if (fileEmployee == null ||
-                fileEmployee.Length == 0)
+            if (fileEmployees == null ||
+                fileEmployees.Count == 0)
             {
                 TempData["FileError"] =
-                    "الرجاء اختيار صورة.";
+                    "الرجاء اختيار ملف واحد على الأقل.";
 
                 return RedirectToAction(
                     nameof(ManageFiles),
@@ -227,22 +223,32 @@ namespace MunicipalServicesMVC.Controllers
                 );
             }
 
-            // اسم تلقائي للصورة
-            employeeFile.Name = "صورة الموظف";
+            foreach (var fileEmployee in fileEmployees)
+            {
+                if (fileEmployee.Length > 0)
+                {
+                    EmployeeFile newFile =
+                        new EmployeeFile
+                        {
+                            EmployeeId =
+                                employeeFile.EmployeeId,
 
-            // رفع الصورة وحفظ الرابط
-            employeeFile.FileURL =
-                UploadEmployeeFile(
-                    fileEmployee,
-                    employeeFile.Name
-                );
+                            Name =
+                                "ملف الموظف"
+                        };
 
-            // نخلي SQL Server يولد Id تلقائياً
-            employeeFile.Id = 0;
+                    newFile.FileURL =
+                        UploadEmployeeFile(
+                            fileEmployee,
+                            newFile.Name
+                        );
 
-            // حفظ بيانات الصورة في قاعدة البيانات
-            _db.EmployeeFiles.Add(employeeFile);
-            _db.SaveChanges();
+                    _unitOfWork.Employees
+                               .AddFile(newFile);
+                }
+            }
+
+            _unitOfWork.Save();
 
             return RedirectToAction(
                 nameof(ManageFiles),
@@ -261,8 +267,8 @@ namespace MunicipalServicesMVC.Controllers
         public IActionResult DeleteFile(int id)
         {
             EmployeeFile? employeeFile =
-                _db.EmployeeFiles
-                   .FirstOrDefault(f => f.Id == id);
+                _unitOfWork.Employees
+                           .GetFileById(id);
 
             if (employeeFile == null)
             {
@@ -272,7 +278,7 @@ namespace MunicipalServicesMVC.Controllers
             int employeeId =
                 employeeFile.EmployeeId;
 
-            // حذف الصورة من wwwroot
+            // حذف الملف من wwwroot
             if (!string.IsNullOrEmpty(
                     employeeFile.FileURL))
             {
@@ -289,9 +295,11 @@ namespace MunicipalServicesMVC.Controllers
                 }
             }
 
-            // حذف بيانات الصورة من قاعدة البيانات
-            _db.EmployeeFiles.Remove(employeeFile);
-            _db.SaveChanges();
+            // حذف بيانات الملف من قاعدة البيانات
+            _unitOfWork.Employees
+                       .DeleteFile(employeeFile);
+
+            _unitOfWork.Save();
 
             return RedirectToAction(
                 nameof(ManageFiles),

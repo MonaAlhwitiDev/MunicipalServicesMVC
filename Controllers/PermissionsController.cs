@@ -1,26 +1,25 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MunicipalServicesMVC.Data;
 using MunicipalServicesMVC.Models;
+using MunicipalServicesMVC.Repositories;
 
 namespace MunicipalServicesMVC.Controllers
 {
     [Authorize(Roles = "مدير النظام")]
     public class PermissionsController : Controller
     {
-        // الاتصال بقاعدة البيانات
-        private readonly AppDbContext _db;
+        private readonly IUnitOfWork _unitOfWork;
 
-        // Constructor
-        public PermissionsController(AppDbContext db)
+        public PermissionsController(IUnitOfWork unitOfWork)
         {
-            _db = db;
+            _unitOfWork = unitOfWork;
         }
 
         // عرض جميع الصلاحيات
         public IActionResult Index()
         {
-            var permissions = _db.Permissions.ToList();
+            var permissions =
+                _unitOfWork.Permissions.GetAll();
 
             return View(permissions);
         }
@@ -38,8 +37,8 @@ namespace MunicipalServicesMVC.Controllers
         {
             if (ModelState.IsValid)
             {
-                _db.Permissions.Add(permission);
-                _db.SaveChanges();
+                _unitOfWork.Permissions.Add(permission);
+                _unitOfWork.Save();
 
                 return RedirectToAction(nameof(Index));
             }
@@ -50,7 +49,8 @@ namespace MunicipalServicesMVC.Controllers
         // فتح صفحة تعديل الصلاحية
         public IActionResult Edit(int id)
         {
-            var permission = _db.Permissions.Find(id);
+            var permission =
+                _unitOfWork.Permissions.GetById(id);
 
             if (permission == null)
             {
@@ -72,8 +72,8 @@ namespace MunicipalServicesMVC.Controllers
 
             if (ModelState.IsValid)
             {
-                _db.Permissions.Update(permission);
-                _db.SaveChanges();
+                _unitOfWork.Permissions.Update(permission);
+                _unitOfWork.Save();
 
                 return RedirectToAction(nameof(Index));
             }
@@ -84,7 +84,8 @@ namespace MunicipalServicesMVC.Controllers
         // فتح صفحة تأكيد الحذف
         public IActionResult Delete(int id)
         {
-            var permission = _db.Permissions.Find(id);
+            var permission =
+                _unitOfWork.Permissions.GetById(id);
 
             if (permission == null)
             {
@@ -99,12 +100,13 @@ namespace MunicipalServicesMVC.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)
         {
-            var permission = _db.Permissions.Find(id);
+            var permission =
+                _unitOfWork.Permissions.GetById(id);
 
             if (permission != null)
             {
-                _db.Permissions.Remove(permission);
-                _db.SaveChanges();
+                _unitOfWork.Permissions.Delete(permission);
+                _unitOfWork.Save();
             }
 
             return RedirectToAction(nameof(Index));
