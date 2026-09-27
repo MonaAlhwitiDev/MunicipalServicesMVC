@@ -11,26 +11,29 @@ namespace MunicipalServicesMVC.Controllers
     [Authorize(Roles = "مدير النظام")]
     public class UsersController : Controller
     {
-        // الاتصال بقاعدة البيانات
         private readonly AppDbContext _db;
 
-        // Constructor
         public UsersController(AppDbContext db)
         {
             _db = db;
         }
 
-        // عرض جميع المستخدمين مع الأدوار
+        // =========================
+        // عرض المستخدمين
+        // =========================
         public IActionResult Index()
         {
             var users = _db.Users
                 .Include(u => u.Role)
+                .Include(u => u.Employee)
                 .ToList();
 
             return View(users);
         }
 
-        // فتح صفحة إضافة مستخدم جديد
+        // =========================
+        // Create - GET
+        // =========================
         public IActionResult Create()
         {
             ViewBag.Roles = new SelectList(
@@ -39,10 +42,18 @@ namespace MunicipalServicesMVC.Controllers
                 "Name"
             );
 
+            ViewBag.Employees = new SelectList(
+                _db.Employees.OrderBy(e => e.Name),
+                "Id",
+                "Name"
+            );
+
             return View();
         }
 
-        // حفظ المستخدم الجديد
+        // =========================
+        // Create - POST
+        // =========================
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create(User user)
@@ -69,10 +80,19 @@ namespace MunicipalServicesMVC.Controllers
                 user.RoleId
             );
 
+            ViewBag.Employees = new SelectList(
+                _db.Employees.OrderBy(e => e.Name),
+                "Id",
+                "Name",
+                user.EmployeeId
+            );
+
             return View(user);
         }
 
-        // فتح صفحة تعديل المستخدم
+        // =========================
+        // Edit - GET
+        // =========================
         public IActionResult Edit(int id)
         {
             var user = _db.Users.Find(id);
@@ -89,10 +109,19 @@ namespace MunicipalServicesMVC.Controllers
                 user.RoleId
             );
 
+            ViewBag.Employees = new SelectList(
+                _db.Employees.OrderBy(e => e.Name),
+                "Id",
+                "Name",
+                user.EmployeeId
+            );
+
             return View(user);
         }
 
-        // حفظ تعديلات المستخدم
+        // =========================
+        // Edit - POST
+        // =========================
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(int id, User user)
@@ -102,6 +131,7 @@ namespace MunicipalServicesMVC.Controllers
                 return NotFound();
             }
 
+            // كلمة المرور لا تتغير من صفحة التعديل
             ModelState.Remove("Password");
 
             if (ModelState.IsValid)
@@ -117,6 +147,9 @@ namespace MunicipalServicesMVC.Controllers
                 existingUser.Email = user.Email;
                 existingUser.RoleId = user.RoleId;
 
+                // ربط حساب المستخدم بالموظف
+                existingUser.EmployeeId = user.EmployeeId;
+
                 _db.SaveChanges();
 
                 return RedirectToAction(nameof(Index));
@@ -129,14 +162,24 @@ namespace MunicipalServicesMVC.Controllers
                 user.RoleId
             );
 
+            ViewBag.Employees = new SelectList(
+                _db.Employees.OrderBy(e => e.Name),
+                "Id",
+                "Name",
+                user.EmployeeId
+            );
+
             return View(user);
         }
 
-        // فتح صفحة تأكيد الحذف
+        // =========================
+        // Delete - GET
+        // =========================
         public IActionResult Delete(int id)
         {
             var user = _db.Users
                 .Include(u => u.Role)
+                .Include(u => u.Employee)
                 .FirstOrDefault(u => u.Id == id);
 
             if (user == null)
@@ -147,7 +190,9 @@ namespace MunicipalServicesMVC.Controllers
             return View(user);
         }
 
-        // حذف المستخدم
+        // =========================
+        // Delete - POST
+        // =========================
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)

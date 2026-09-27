@@ -12,8 +12,8 @@ namespace MunicipalServicesMVC.Data
 
         public DbSet<Department> Departments { get; set; }
         public DbSet<Employee> Employees { get; set; }
+        public DbSet<EmployeeFile> EmployeeFiles { get; set; }
         public DbSet<Service> Services { get; set; }
-
 
         public DbSet<User> Users { get; set; }
         public DbSet<Role> Roles { get; set; }
@@ -31,14 +31,14 @@ namespace MunicipalServicesMVC.Data
                 .HasForeignKey(u => u.RoleId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // ربط RolePermission مع Role
+            // ربط Role مع RolePermission
             modelBuilder.Entity<RolePermission>()
                 .HasOne(rp => rp.Role)
                 .WithMany(r => r.RolePermissions)
                 .HasForeignKey(rp => rp.RoleId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // ربط RolePermission مع Permission
+            // ربط Permission مع RolePermission
             modelBuilder.Entity<RolePermission>()
                 .HasOne(rp => rp.Permission)
                 .WithMany(p => p.RolePermissions)

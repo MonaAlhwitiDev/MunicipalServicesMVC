@@ -1,54 +1,81 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using MunicipalServicesMVC.Data;
+using MunicipalServicesMVC.DTOs;
 using MunicipalServicesMVC.Models;
+using MunicipalServicesMVC.Repositories;
 
 namespace MunicipalServicesMVC.Controllers
 {
     [Authorize]
     public class DepartmentsController : Controller
     {
-        private readonly AppDbContext _db;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public DepartmentsController(AppDbContext db)
+        public DepartmentsController(IUnitOfWork unitOfWork)
         {
-            _db = db;
+            _unitOfWork = unitOfWork;
         }
 
+        // =========================
+        // Index
+        // =========================
         public IActionResult Index()
         {
             IEnumerable<Department> departments =
-                _db.Departments
-                   .Include(d => d.Employees)
-                   .Include(d => d.Services)
-                   .ToList();
+                _unitOfWork.Departments.GetAll();
 
             return View(departments);
         }
 
+        // =========================
+        // Create - GET
+        // =========================
+        [HttpGet]
         public IActionResult Create()
         {
             return View();
         }
 
+        // =========================
+        // Create - POST
+        // DTO + Mapping
+        // =========================
         [HttpPost]
-        public IActionResult Create(Department department)
+        [ValidateAntiForgeryToken]
+        public IActionResult Create(CreateDepartmentDto departmentDto)
         {
             if (ModelState.IsValid)
             {
-                _db.Departments.Add(department);
-                _db.SaveChanges();
+                Department department = new Department
+                {
+                    Name = departmentDto.Name,
+                    UID = Guid.NewGuid().ToString()
+                };
 
-                return RedirectToAction("Index");
+                _unitOfWork.Departments.Add(department);
+
+                _unitOfWork.Save();
+
+                return RedirectToAction(nameof(Index));
             }
 
-            return View(department);
+            return View();
         }
 
-        public IActionResult Edit(int id)
+        // =========================
+        // Edit - GET
+        // UID
+        // =========================
+        [HttpGet]
+        public IActionResult Edit(string uid)
         {
-            Department? department = _db.Departments.Find(id);
+            if (string.IsNullOrEmpty(uid))
+            {
+                return NotFound();
+            }
+
+            Department? department =
+                _unitOfWork.Departments.GetByUID(uid);
 
             if (department == null)
             {
@@ -58,23 +85,58 @@ namespace MunicipalServicesMVC.Controllers
             return View(department);
         }
 
+        // =========================
+        // Edit - POST
+        // =========================
         [HttpPost]
-        public IActionResult Edit(Department department)
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(
+            string uid,
+            Department department)
         {
-            if (ModelState.IsValid)
+            if (string.IsNullOrEmpty(uid))
             {
-                _db.Departments.Update(department);
-                _db.SaveChanges();
-
-                return RedirectToAction("Index");
+                return NotFound();
             }
 
-            return View(department);
+            Department? oldDepartment =
+                _unitOfWork.Departments.GetByUID(uid);
+
+            if (oldDepartment == null)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                oldDepartment.Name = department.Name;
+
+                _unitOfWork.Departments.Update(
+                    oldDepartment
+                );
+
+                _unitOfWork.Save();
+
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(oldDepartment);
         }
 
-        public IActionResult Delete(int id)
+        // =========================
+        // Delete - GET
+        // UID
+        // =========================
+        [HttpGet]
+        public IActionResult Delete(string uid)
         {
-            Department? department = _db.Departments.Find(id);
+            if (string.IsNullOrEmpty(uid))
+            {
+                return NotFound();
+            }
+
+            Department? department =
+                _unitOfWork.Departments.GetByUID(uid);
 
             if (department == null)
             {
@@ -84,13 +146,33 @@ namespace MunicipalServicesMVC.Controllers
             return View(department);
         }
 
+        // =========================
+        // Delete - POST
+        // =========================
         [HttpPost]
-        public IActionResult Delete(Department department)
+        [ValidateAntiForgeryToken]
+        public IActionResult DeleteConfirmed(string uid)
         {
-            _db.Departments.Remove(department);
-            _db.SaveChanges();
+            if (string.IsNullOrEmpty(uid))
+            {
+                return NotFound();
+            }
 
-            return RedirectToAction("Index");
+            Department? department =
+                _unitOfWork.Departments.GetByUID(uid);
+
+            if (department == null)
+            {
+                return NotFound();
+            }
+
+            _unitOfWork.Departments.Delete(
+                department
+            );
+
+            _unitOfWork.Save();
+
+            return RedirectToAction(nameof(Index));
         }
     }
 }

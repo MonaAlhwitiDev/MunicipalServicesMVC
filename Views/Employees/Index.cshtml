@@ -2,13 +2,17 @@
 
 @{
     ViewData["Title"] = "الموظفين";
+
+    var employeeImages =
+        ViewBag.EmployeeImages as Dictionary<int, string>
+        ?? new Dictionary<int, string>();
 }
 
 <div class="container py-4">
 
     <div class="row justify-content-center">
 
-        <div class="col-lg-10">
+        <div class="col-lg-11">
 
             <div class="d-flex justify-content-between align-items-center mb-4">
 
@@ -27,6 +31,7 @@
 
                     <thead>
                         <tr>
+                            <th class="bg-success text-white">الصورة</th>
                             <th class="bg-success text-white">الرقم</th>
                             <th class="bg-success text-white">اسم الموظف</th>
                             <th class="bg-success text-white">المسمى الوظيفي</th>
@@ -41,9 +46,40 @@
                         {
                             <tr>
 
+                                <td>
+
+                                    @if (employeeImages.ContainsKey(employee.Id))
+                                    {
+                                        <img src="@employeeImages[employee.Id]"
+                                             alt="صورة الموظف"
+                                             width="55"
+                                             height="55"
+                                             style="object-fit:cover;border-radius:50%;" />
+                                    }
+                                    else
+                                    {
+                                        <div style="
+                                            width:55px;
+                                            height:55px;
+                                            border-radius:50%;
+                                            background:#f1f1f1;
+                                            display:flex;
+                                            align-items:center;
+                                            justify-content:center;
+                                            font-size:28px;
+                                            margin:auto;">
+                                            👤
+                                        </div>
+                                    }
+
+                                </td>
+
                                 <td>@employee.Id</td>
+
                                 <td>@employee.Name</td>
+
                                 <td>@employee.JobTitle</td>
+
                                 <td>@employee.Department?.Name</td>
 
                                 <td>
@@ -52,6 +88,12 @@
                                        asp-route-id="@employee.Id"
                                        class="btn btn-warning btn-sm">
                                         تعديل
+                                    </a>
+
+                                    <a asp-action="ManageFiles"
+                                       asp-route-id="@employee.Id"
+                                       class="btn btn-success btn-sm">
+                                        الملفات
                                     </a>
 
                                     <a asp-action="Delete"

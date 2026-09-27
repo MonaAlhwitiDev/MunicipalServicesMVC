@@ -1,0 +1,195 @@
+﻿@model MunicipalServicesMVC.Models.EmployeeFile
+
+@{
+    ViewData["Title"] = "ملفات الموظف";
+
+    var files = ViewBag.EmployeeFiles as List<MunicipalServicesMVC.Models.EmployeeFile>
+                ?? new List<MunicipalServicesMVC.Models.EmployeeFile>();
+}
+
+<div class="container mt-4" dir="rtl">
+
+    <div class="mb-4 text-center">
+
+        <h2>إدارة ملفات الموظف</h2>
+
+        <h5 class="mt-3">
+            الموظف:
+            <strong>@ViewBag.EmployeeName</strong>
+        </h5>
+
+    </div>
+
+    @if (TempData["FileError"] != null)
+    {
+        <div class="alert alert-danger text-center">
+            @TempData["FileError"]
+        </div>
+    }
+
+    <div class="card shadow-sm mb-4">
+
+        <div class="card-header">
+            <h5 class="mb-0">رفع صورة الموظف</h5>
+        </div>
+
+        <div class="card-body">
+
+            <form method="post"
+                  asp-action="ManageFiles"
+                  enctype="multipart/form-data">
+
+                @Html.AntiForgeryToken()
+
+                <input asp-for="EmployeeId"
+                       type="hidden"
+                       value="@ViewBag.EmployeeId" />
+
+                <div class="mb-3">
+
+                    <label class="form-label">
+                        اختر الصورة
+                    </label>
+
+                    <div class="d-flex align-items-center gap-2">
+
+                        <label for="fileEmployee"
+                               class="btn btn-light border mb-0">
+                            اختيار ملف
+                        </label>
+
+                        <span id="fileName">
+                            لم يتم اختيار ملف
+                        </span>
+
+                        <input type="file"
+                               id="fileEmployee"
+                               name="fileEmployee"
+                               accept="image/*"
+                               hidden
+                               onchange="showFileName(this)" />
+
+                    </div>
+
+                </div>
+
+                <button type="submit"
+                        class="btn btn-success">
+                    رفع الصورة
+                </button>
+
+                <a asp-action="Index"
+                   class="btn btn-warning">
+                    رجوع
+                </a>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <div class="card shadow-sm">
+
+        <div class="card-header">
+            <h5 class="mb-0">صور الموظف</h5>
+        </div>
+
+        <div class="card-body">
+
+            @if (files.Count == 0)
+            {
+                <div class="alert alert-info text-center">
+                    لا توجد صورة للموظف حتى الآن.
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+
+                    <table class="table table-striped table-hover align-middle text-center">
+
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>اسم الملف</th>
+                                <th>الصورة</th>
+                                <th>الإجراءات</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            @foreach (var file in files)
+                            {
+                                <tr>
+
+                                    <td>@file.Id</td>
+
+                                    <td>@file.Name</td>
+
+                                    <td>
+
+                                        <img src="@file.FileURL"
+                                             alt="صورة الموظف"
+                                             width="80"
+                                             height="80"
+                                             style="object-fit:cover;border-radius:50%;" />
+
+                                    </td>
+
+                                    <td>
+
+                                        <form asp-action="DeleteFile"
+                                              method="post"
+                                              class="d-inline">
+
+                                            @Html.AntiForgeryToken()
+
+                                            <input type="hidden"
+                                                   name="id"
+                                                   value="@file.Id" />
+
+                                            <button type="submit"
+                                                    class="btn btn-danger btn-sm"
+                                                    onclick="return confirm('هل أنت متأكد من حذف الصورة؟');">
+                                                حذف الصورة
+                                            </button>
+
+                                        </form>
+
+                                    </td>
+
+                                </tr>
+                            }
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+            }
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>function showFileName(input) {
+
+        const fileName =
+            document.getElementById("fileName");
+
+        if (input.files.length > 0) {
+
+            fileName.textContent =
+                input.files[0].name;
+
+        } else {
+
+            fileName.textContent =
+                "لم يتم اختيار ملف";
+        }
+    }</script>

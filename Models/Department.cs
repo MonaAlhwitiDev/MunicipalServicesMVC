@@ -8,12 +8,14 @@ namespace MunicipalServicesMVC.Models
         [Key]
         public int Id { get; set; }
 
+        public string UID { get; set; } = Guid.NewGuid().ToString();
+
         public string Name { get; set; } = string.Empty;
 
-        public ICollection<Employee> Employees { get; set; } = new List<Employee>();
+        public ICollection<Employee> Employees { get; set; }
+            = new List<Employee>();
 
-        public ICollection<Service> Services { get; set; } = new List<Service>();
+        public ICollection<Service> Services { get; set; }
+            = new List<Service>();
     }
 }
-
-//جدول الادارات

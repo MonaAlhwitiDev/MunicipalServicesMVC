@@ -13,26 +13,51 @@
         @ViewData["Title"] - نظام إدارة الخدمات البلدية
     </title>
 
-    <!-- Bootstrap فقط -->
+    <!-- Bootstrap -->
     <link rel="stylesheet"
           href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+    <!-- CSS الخاص بالنظام -->
+    <link rel="stylesheet"
+          href="~/css/site.css"
+          asp-append-version="true" />
 
 </head>
 
 
 <body class="bg-light">
 
+    @{
+        var employeeName =
+            User.FindFirst("EmployeeName")?.Value
+            ?? User.Identity?.Name
+            ?? "المستخدم";
 
+        var employeeImage =
+            User.FindFirst("EmployeeImage")?.Value;
+
+        var userRole =
+            User.FindFirst(
+                System.Security.Claims.ClaimTypes.Role
+            )?.Value;
+    }
+
+
+    <!-- ========================= -->
     <!-- الشريط العلوي -->
+    <!-- ========================= -->
+
     <nav class="navbar navbar-dark bg-success shadow-sm">
 
-        <div class="container-fluid">
+        <div class="container-fluid d-flex justify-content-between align-items-center">
 
+
+            <!-- شعار واسم النظام -->
             <a class="navbar-brand d-flex align-items-center gap-3"
                asp-controller="Home"
                asp-action="Index">
 
-                <img src="/images/tabuk-logo.png"
+                <img src="~/images/tabuk-logo.png"
                      alt="شعار أمانة منطقة تبوك"
                      width="55" />
 
@@ -42,18 +67,65 @@
 
             </a>
 
+
+            <!-- المستخدم المسجل -->
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                <div class="user-profile">
+
+                    @if (!string.IsNullOrEmpty(employeeImage))
+                    {
+                        <img src="@employeeImage"
+                             alt="صورة الموظف"
+                             class="user-profile-image" />
+                    }
+                    else
+                    {
+                        <div class="user-profile-placeholder">
+
+                            @employeeName.Substring(0, 1)
+
+                        </div>
+                    }
+
+
+                    <div class="user-profile-details">
+
+                        <span class="user-profile-name">
+                            @employeeName
+                        </span>
+
+                        @if (!string.IsNullOrEmpty(userRole))
+                        {
+                            <span class="user-profile-role">
+                                @userRole
+                            </span>
+                        }
+
+                    </div>
+
+                </div>
+            }
+
+
         </div>
 
     </nav>
 
 
+    <!-- ========================= -->
     <!-- الصفحة -->
+    <!-- ========================= -->
+
     <div class="container-fluid">
 
         <div class="row">
 
 
+            <!-- ========================= -->
             <!-- القائمة الجانبية -->
+            <!-- ========================= -->
+
             <aside class="col-md-3 col-lg-2 bg-success text-white min-vh-100 p-4">
 
                 <div class="text-center mb-4">
@@ -110,6 +182,7 @@
 
                     @if (User.IsInRole("مدير النظام"))
                     {
+
                         <!-- المستخدمين -->
                         <a asp-controller="Users"
                            asp-action="Index"
@@ -138,6 +211,7 @@
                             الصلاحيات
 
                         </a>
+
                     }
 
 
@@ -156,7 +230,10 @@
             </aside>
 
 
+            <!-- ========================= -->
             <!-- محتوى الصفحات -->
+            <!-- ========================= -->
+
             <main class="col-md-9 col-lg-10 p-4">
 
                 @RenderBody()
@@ -169,7 +246,10 @@
     </div>
 
 
-    <!-- الفوتر -->
+    <!-- ========================= -->
+    <!-- Footer -->
+    <!-- ========================= -->
+
     <footer class="border-top bg-white text-muted text-center py-3">
 
         1448 - نظام إدارة الخدمات البلدية
@@ -177,12 +257,16 @@
     </footer>
 
 
+    <!-- ========================= -->
     <!-- JavaScript -->
+    <!-- ========================= -->
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
 
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 
     @await RenderSectionAsync("Scripts", required: false)
+
 
 </body>
 

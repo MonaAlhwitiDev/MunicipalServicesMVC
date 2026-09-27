@@ -4,64 +4,79 @@
     ViewData["Title"] = "حذف الخدمة";
 }
 
-<div class="container py-4">
+<div class="container py-4" dir="rtl">
 
     <div class="row justify-content-center">
 
-        <div class="col-lg-6 col-md-8">
+        <div class="col-md-6">
 
-            <div class="card shadow-sm border-0">
+            <div class="card shadow-sm">
 
-                <div class="card-header bg-success text-white text-center py-3">
-
+                <div class="card-header bg-success text-white">
                     <h4 class="mb-0">
                         حذف الخدمة
                     </h4>
-
                 </div>
 
-                <div class="card-body text-center p-4">
+                <div class="card-body">
 
-                    <p class="fs-5 mb-4">
+                    <div class="alert alert-danger text-center">
                         هل أنت متأكد من حذف هذه الخدمة؟
-                    </p>
+                    </div>
 
-                    <div class="alert alert-light border mb-4">
+                    <div class="mb-3">
 
-                        <h5 class="mb-3">
-                            @Model.Name
-                        </h5>
+                        <label class="form-label">
+                            اسم الخدمة
+                        </label>
 
-                        <p class="mb-2">
-                            <strong>الوصف:</strong>
-                            @Model.Description
-                        </p>
-
-                        <p class="mb-0">
-                            <strong>الإدارة:</strong>
-                            @Model.Department?.Name
-                        </p>
+                        <input value="@Model.Name"
+                               class="form-control"
+                               readonly />
 
                     </div>
 
-                    <form asp-action="Delete">
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            وصف الخدمة
+                        </label>
+
+                        <textarea class="form-control"
+                                  rows="4"
+                                  readonly>@Model.Description</textarea>
+
+                    </div>
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            الإدارة
+                        </label>
+
+                        <input value="@Model.Department?.Name"
+                               class="form-control"
+                               readonly />
+
+                    </div>
+
+                    <form asp-action="Delete"
+                          method="post">
+
+                        @Html.AntiForgeryToken()
 
                         <input type="hidden"
                                asp-for="Id" />
 
-                        <div class="d-flex justify-content-between">
+                        <button type="submit"
+                                class="btn btn-danger">
+                            حذف
+                        </button>
 
-                            <a asp-action="Index"
-                               class="btn btn-warning">
-                                رجوع
-                            </a>
-
-                            <button type="submit"
-                                    class="btn btn-danger">
-                                تأكيد الحذف
-                            </button>
-
-                        </div>
+                        <a asp-action="Index"
+                           class="btn btn-warning">
+                            رجوع
+                        </a>
 
                     </form>
 

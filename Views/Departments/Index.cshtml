@@ -8,7 +8,7 @@
 
     <div class="row justify-content-center">
 
-        <div class="col-lg-10">
+        <div class="col-lg-11">
 
             <div class="d-flex justify-content-between align-items-center mb-4">
 
@@ -27,11 +27,25 @@
 
                     <thead>
                         <tr>
-                            <th class="bg-success text-white">الرقم</th>
-                            <th class="bg-success text-white">اسم الإدارة</th>
-                            <th class="bg-success text-white">عدد الموظفين</th>
-                            <th class="bg-success text-white">عدد الخدمات</th>
-                            <th class="bg-success text-white">الإجراءات</th>
+                            <th class="bg-success text-white">
+                                الرقم
+                            </th>
+
+                            <th class="bg-success text-white">
+                                اسم الإدارة
+                            </th>
+
+                            <th class="bg-success text-white">
+                                عدد الموظفين
+                            </th>
+
+                            <th class="bg-success text-white">
+                                عدد الخدمات
+                            </th>
+
+                            <th class="bg-success text-white">
+                                الإجراءات
+                            </th>
                         </tr>
                     </thead>
 
@@ -41,21 +55,32 @@
                         {
                             <tr>
 
-                                <td>@department.Id</td>
-                                <td>@department.Name</td>
-                                <td>@department.Employees.Count</td>
-                                <td>@department.Services.Count</td>
+                                <td>
+                                    @department.Id
+                                </td>
+
+                                <td>
+                                    @department.Name
+                                </td>
+
+                                <td>
+                                    @department.Employees.Count
+                                </td>
+
+                                <td>
+                                    @department.Services.Count
+                                </td>
 
                                 <td>
 
                                     <a asp-action="Edit"
-                                       asp-route-id="@department.Id"
+                                       asp-route-uid="@department.UID"
                                        class="btn btn-warning btn-sm">
                                         تعديل
                                     </a>
 
                                     <a asp-action="Delete"
-                                       asp-route-id="@department.Id"
+                                       asp-route-uid="@department.UID"
                                        class="btn btn-danger btn-sm">
                                         حذف
                                     </a>

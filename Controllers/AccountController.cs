@@ -11,72 +11,148 @@ namespace MunicipalServicesMVC.Controllers
 {
     public class AccountController : Controller
     {
-        // الاتصال بقاعدة البيانات
         private readonly AppDbContext _db;
 
-        // Constructor
         public AccountController(AppDbContext db)
         {
             _db = db;
         }
 
-        // فتح صفحة تسجيل الدخول
+        // =========================
+        // Login - GET
+        // =========================
         [HttpGet]
         public IActionResult Login()
         {
             return View();
         }
 
-        // التحقق من بيانات تسجيل الدخول
+        // =========================
+        // Login - POST
+        // =========================
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(string email, string password)
+        public async Task<IActionResult> Login(
+            string email,
+            string password)
         {
             var user = _db.Users
                 .Include(u => u.Role)
+                .Include(u => u.Employee)
                 .FirstOrDefault(u => u.Email == email);
 
             if (user == null)
             {
-                ViewBag.Error = "البريد الإلكتروني أو كلمة المرور غير صحيحة";
+                ViewBag.Error =
+                    "البريد الإلكتروني أو كلمة المرور غير صحيحة";
+
                 return View();
             }
 
-            var passwordHasher = new PasswordHasher<User>();
+            var passwordHasher =
+                new PasswordHasher<User>();
 
-            var result = passwordHasher.VerifyHashedPassword(
-                user,
-                user.Password,
-                password
-            );
+            var result =
+                passwordHasher.VerifyHashedPassword(
+                    user,
+                    user.Password,
+                    password
+                );
 
-            if (result == PasswordVerificationResult.Failed)
+            if (result ==
+                PasswordVerificationResult.Failed)
             {
-                ViewBag.Error = "البريد الإلكتروني أو كلمة المرور غير صحيحة";
+                ViewBag.Error =
+                    "البريد الإلكتروني أو كلمة المرور غير صحيحة";
+
                 return View();
             }
 
-            // إنشاء بيانات المستخدم
+            // =========================
+            // الصورة المرتبطة بالموظف
+            // =========================
+            string? employeeImage = null;
+
+            if (user.EmployeeId.HasValue)
+            {
+                employeeImage = _db.EmployeeFiles
+                    .Where(f =>
+                        f.EmployeeId == user.EmployeeId.Value)
+                    .OrderByDescending(f => f.Id)
+                    .Select(f => f.FileURL)
+                    .FirstOrDefault();
+            }
+
+            // =========================
+            // Claims
+            // =========================
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Name, user.Name),
-                new Claim(ClaimTypes.Email, user.Email),
-                new Claim("RoleId", user.RoleId.ToString())
+                new Claim(
+                    ClaimTypes.NameIdentifier,
+                    user.Id.ToString()
+                ),
+
+                new Claim(
+                    ClaimTypes.Name,
+                    user.Name
+                ),
+
+                new Claim(
+                    ClaimTypes.Email,
+                    user.Email
+                ),
+
+                new Claim(
+                    "RoleId",
+                    user.RoleId.ToString()
+                )
             };
 
+            // =========================
+            // بيانات الموظف
+            // =========================
+            if (user.Employee != null)
+            {
+                claims.Add(
+                    new Claim(
+                        "EmployeeName",
+                        user.Employee.Name
+                    )
+                );
+            }
+
+            if (!string.IsNullOrEmpty(employeeImage))
+            {
+                claims.Add(
+                    new Claim(
+                        "EmployeeImage",
+                        employeeImage
+                    )
+                );
+            }
+
+            // =========================
+            // Role + Permissions
+            // =========================
             if (user.Role != null)
             {
                 claims.Add(
-                    new Claim(ClaimTypes.Role, user.Role.Name)
+                    new Claim(
+                        ClaimTypes.Role,
+                        user.Role.Name
+                    )
                 );
 
-                var permissions = _db.RolePermissions
-                    .Include(rp => rp.Permission)
-                    .Where(rp => rp.RoleId == user.RoleId)
-                    .ToList();
+                var permissions =
+                    _db.RolePermissions
+                        .Include(rp => rp.Permission)
+                        .Where(rp =>
+                            rp.RoleId == user.RoleId)
+                        .ToList();
 
-                foreach (var rolePermission in permissions)
+                foreach (
+                    var rolePermission in permissions)
                 {
                     if (rolePermission.Permission != null)
                     {
@@ -90,15 +166,22 @@ namespace MunicipalServicesMVC.Controllers
                 }
             }
 
-            var identity = new ClaimsIdentity(
-                claims,
-                CookieAuthenticationDefaults.AuthenticationScheme
-            );
+            // =========================
+            // إنشاء تسجيل الدخول
+            // =========================
+            var identity =
+                new ClaimsIdentity(
+                    claims,
+                    CookieAuthenticationDefaults
+                        .AuthenticationScheme
+                );
 
-            var principal = new ClaimsPrincipal(identity);
+            var principal =
+                new ClaimsPrincipal(identity);
 
             await HttpContext.SignInAsync(
-                CookieAuthenticationDefaults.AuthenticationScheme,
+                CookieAuthenticationDefaults
+                    .AuthenticationScheme,
                 principal
             );
 
@@ -108,11 +191,14 @@ namespace MunicipalServicesMVC.Controllers
             );
         }
 
-        // تسجيل الخروج
+        // =========================
+        // Logout
+        // =========================
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(
-                CookieAuthenticationDefaults.AuthenticationScheme
+                CookieAuthenticationDefaults
+                    .AuthenticationScheme
             );
 
             return RedirectToAction(
@@ -121,7 +207,9 @@ namespace MunicipalServicesMVC.Controllers
             );
         }
 
-        // صفحة عدم وجود صلاحية
+        // =========================
+        // Access Denied
+        // =========================
         public IActionResult AccessDenied()
         {
             return View();

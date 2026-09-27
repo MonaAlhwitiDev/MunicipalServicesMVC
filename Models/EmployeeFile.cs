@@ -3,18 +3,18 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MunicipalServicesMVC.Models
 {
-    public class Employee
+    public class EmployeeFile
     {
         [Key]
         public int Id { get; set; }
 
         public string Name { get; set; } = string.Empty;
 
-        public string JobTitle { get; set; } = string.Empty;
+        public string FileURL { get; set; } = string.Empty;
 
-        [ForeignKey("Department")]
-        public int? DepartmentId { get; set; }
+        [ForeignKey(nameof(Employee))]
+        public int EmployeeId { get; set; }
 
-        public Department? Department { get; set; }
+        public Employee? Employee { get; set; }
     }
 }

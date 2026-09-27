@@ -9,17 +9,23 @@
     <h2 class="mb-4">تعديل المستخدم</h2>
 
     <div class="card shadow-sm">
+
         <div class="card-body">
 
-            <form asp-action="Edit" method="post">
+            <form asp-action="Edit"
+                  method="post">
 
-                <input type="hidden" asp-for="Id" />
+                <input type="hidden"
+                       asp-for="Id" />
 
                 <div asp-validation-summary="ModelOnly"
                      class="text-danger mb-3">
                 </div>
 
+
+                <!-- اسم المستخدم -->
                 <div class="mb-3">
+
                     <label asp-for="Name"
                            class="form-label">
                     </label>
@@ -30,9 +36,13 @@
                     <span asp-validation-for="Name"
                           class="text-danger">
                     </span>
+
                 </div>
 
+
+                <!-- البريد الإلكتروني -->
                 <div class="mb-3">
+
                     <label asp-for="Email"
                            class="form-label">
                     </label>
@@ -43,9 +53,13 @@
                     <span asp-validation-for="Email"
                           class="text-danger">
                     </span>
+
                 </div>
 
+
+                <!-- الدور -->
                 <div class="mb-3">
+
                     <label asp-for="RoleId"
                            class="form-label">
                         الدور
@@ -54,14 +68,46 @@
                     <select asp-for="RoleId"
                             asp-items="ViewBag.Roles"
                             class="form-select">
-                        <option value="">اختر الدور</option>
+
+                        <option value="">
+                            اختر الدور
+                        </option>
+
                     </select>
 
                     <span asp-validation-for="RoleId"
                           class="text-danger">
                     </span>
+
                 </div>
 
+
+                <!-- الموظف المرتبط بالحساب -->
+                <div class="mb-3">
+
+                    <label asp-for="EmployeeId"
+                           class="form-label">
+                        الموظف المرتبط بالحساب
+                    </label>
+
+                    <select asp-for="EmployeeId"
+                            asp-items="ViewBag.Employees"
+                            class="form-select">
+
+                        <option value="">
+                            اختر الموظف
+                        </option>
+
+                    </select>
+
+                    <span asp-validation-for="EmployeeId"
+                          class="text-danger">
+                    </span>
+
+                </div>
+
+
+                <!-- الأزرار -->
                 <button type="submit"
                         class="btn btn-success">
                     حفظ التعديلات
@@ -75,6 +121,7 @@
             </form>
 
         </div>
+
     </div>
 
 </div>

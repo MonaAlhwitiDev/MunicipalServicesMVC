@@ -1,22 +1,674 @@
-﻿html {
-  font-size: 14px;
+﻿/* =========================================
+   نظام إدارة الخدمات البلدية
+   Main Style
+   ========================================= */
+
+html {
+    font-size: 14px;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+    html {
+        font-size: 16px;
+    }
 }
 
 html {
-  position: relative;
-  min-height: 100%;
+    position: relative;
+    min-height: 100%;
 }
 
 body {
-  margin-bottom: 60px;
+    margin: 0;
+    direction: rtl;
+    background-color: #f8f9fa;
+    font-family: Arial, Tahoma, sans-serif;
+}
+
+
+/* =========================================
+   الألوان الرئيسية
+   ========================================= */
+
+:root {
+    --main-green: #198754;
+    --main-green-dark: #146c43;
+    --main-orange: #f4b400;
+    --light-gray: #f8f9fa;
+    --border-color: #dee2e6;
+}
+
+
+/* =========================================
+   الشريط العلوي
+   ========================================= */
+
+.navbar {
+    min-height: 80px;
+}
+
+.navbar-brand {
+    color: white !important;
+}
+
+    .navbar-brand img {
+        object-fit: contain;
+    }
+
+    .navbar-brand span {
+        color: white;
+    }
+
+
+/* =========================================
+   القائمة الجانبية
+   ========================================= */
+
+aside {
+    box-shadow: -2px 0 8px rgba(0, 0, 0, 0.08);
+}
+
+    aside .nav-link {
+        color: white !important;
+        transition: all 0.25s ease;
+        margin-bottom: 4px;
+    }
+
+        aside .nav-link:hover {
+            background-color: white;
+            color: var(--main-orange) !important;
+            padding-right: 22px;
+        }
+
+        aside .nav-link:focus {
+            background-color: white;
+            color: var(--main-orange) !important;
+        }
+
+
+/* =========================================
+   محتوى الصفحة
+   ========================================= */
+
+main {
+    min-height: calc(100vh - 140px);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+    font-weight: 700;
+}
+
+
+/* =========================================
+   البطاقات
+   ========================================= */
+
+.card {
+    border: 1px solid #e5e5e5;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
+}
+
+.card-header {
+    font-weight: bold;
+    padding: 15px 20px;
+}
+
+    .card-header.bg-success {
+        background-color: var(--main-green) !important;
+        color: white !important;
+    }
+
+
+/* =========================================
+   الجداول
+   ========================================= */
+
+.table {
+    background-color: white;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+    .table thead th {
+        vertical-align: middle;
+        padding: 14px;
+        white-space: nowrap;
+    }
+
+    .table tbody td {
+        vertical-align: middle;
+        padding: 12px;
+    }
+
+.table-hover tbody tr:hover {
+    background-color: #f3f8f5;
+}
+
+.table .bg-success {
+    background-color: var(--main-green) !important;
+    color: white !important;
+}
+
+
+/* =========================================
+   حقول الإدخال
+   ========================================= */
+
+.form-control,
+.form-select {
+    border-radius: 7px;
+    min-height: 45px;
+    border: 1px solid #ced4da;
+}
+
+    .form-control:focus,
+    .form-select:focus {
+        border-color: var(--main-green);
+        box-shadow: 0 0 0 0.15rem rgba(25, 135, 84, 0.20);
+    }
+
+.form-label {
+    font-weight: 600;
+}
+
+
+/* =========================================
+   الأزرار
+   ========================================= */
+
+.btn {
+    border-radius: 6px;
+    font-weight: 600;
+    padding: 8px 16px;
+}
+
+.btn-sm {
+    padding: 6px 12px;
+}
+
+.btn-success {
+    background-color: var(--main-green);
+    border-color: var(--main-green);
+}
+
+    .btn-success:hover {
+        background-color: var(--main-green-dark);
+        border-color: var(--main-green-dark);
+    }
+
+.btn-warning {
+    background-color: var(--main-orange);
+    border-color: var(--main-orange);
+    color: #212529;
+}
+
+    .btn-warning:hover {
+        background-color: #dda300;
+        border-color: #dda300;
+        color: #212529;
+    }
+
+
+/* =========================================
+   صور الموظفين
+   ========================================= */
+
+.employee-image {
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #e5e5e5;
+}
+
+.employee-placeholder {
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    background-color: #eeeeee;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: auto;
+    font-size: 26px;
+}
+
+
+/* =========================================
+   رسائل النظام
+   ========================================= */
+
+.alert {
+    border-radius: 7px;
+}
+
+
+/* =========================================
+   Footer
+   ========================================= */
+
+footer {
+    font-size: 14px;
+}
+
+
+/* =========================================
+   الجوال والشاشات الصغيرة
+   ========================================= */
+
+@media (max-width: 767px) {
+
+    .navbar-brand span {
+        font-size: 17px !important;
+    }
+
+    .navbar-brand img {
+        width: 42px;
+    }
+
+    aside {
+        min-height: auto !important;
+        padding: 15px !important;
+    }
+
+        aside .nav-link {
+            padding: 10px !important;
+            font-size: 16px !important;
+        }
+
+    main {
+        padding: 15px !important;
+    }
+
+    .table {
+        font-size: 13px;
+    }
+
+    .btn {
+        margin-bottom: 4px;
+    }
+}
+/* =========================================
+   نظام إدارة الخدمات البلدية
+   Main Style
+   ========================================= */
+
+html {
+    font-size: 14px;
+}
+
+@media (min-width: 768px) {
+    html {
+        font-size: 16px;
+    }
+}
+
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    margin: 0;
+    direction: rtl;
+    background-color: #f8f9fa;
+    font-family: Arial, Tahoma, sans-serif;
+}
+
+
+/* =========================================
+   الألوان الرئيسية
+   ========================================= */
+
+:root {
+    --main-green: #198754;
+    --main-green-dark: #146c43;
+    --main-orange: #f4b400;
+    --light-gray: #f8f9fa;
+    --border-color: #dee2e6;
+}
+
+
+/* =========================================
+   الشريط العلوي
+   ========================================= */
+
+.navbar {
+    min-height: 80px;
+}
+
+.navbar-brand {
+    color: white !important;
+}
+
+    .navbar-brand img {
+        object-fit: contain;
+    }
+
+    .navbar-brand span {
+        color: white;
+    }
+
+
+/* =========================================
+   القائمة الجانبية
+   ========================================= */
+
+aside {
+    box-shadow: -2px 0 8px rgba(0, 0, 0, 0.08);
+}
+
+    aside .nav-link {
+        color: white !important;
+        transition: all 0.25s ease;
+        margin-bottom: 4px;
+    }
+
+        aside .nav-link:hover {
+            background-color: white;
+            color: var(--main-orange) !important;
+            padding-right: 22px;
+        }
+
+        aside .nav-link:focus {
+            background-color: white;
+            color: var(--main-orange) !important;
+        }
+
+
+/* =========================================
+   محتوى الصفحة
+   ========================================= */
+
+main {
+    min-height: calc(100vh - 140px);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+    font-weight: 700;
+}
+
+
+/* =========================================
+   البطاقات
+   ========================================= */
+
+.card {
+    border: 1px solid #e5e5e5;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
+}
+
+.card-header {
+    font-weight: bold;
+    padding: 15px 20px;
+}
+
+    .card-header.bg-success {
+        background-color: var(--main-green) !important;
+        color: white !important;
+    }
+
+
+/* =========================================
+   الجداول
+   ========================================= */
+
+.table {
+    background-color: white;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+    .table thead th {
+        vertical-align: middle;
+        padding: 14px;
+        white-space: nowrap;
+    }
+
+    .table tbody td {
+        vertical-align: middle;
+        padding: 12px;
+    }
+
+.table-hover tbody tr:hover {
+    background-color: #f3f8f5;
+}
+
+.table .bg-success {
+    background-color: var(--main-green) !important;
+    color: white !important;
+}
+
+
+/* =========================================
+   حقول الإدخال
+   ========================================= */
+
+.form-control,
+.form-select {
+    border-radius: 7px;
+    min-height: 45px;
+    border: 1px solid #ced4da;
+}
+
+    .form-control:focus,
+    .form-select:focus {
+        border-color: var(--main-green);
+        box-shadow: 0 0 0 0.15rem rgba(25, 135, 84, 0.20);
+    }
+
+.form-label {
+    font-weight: 600;
+}
+
+
+/* =========================================
+   الأزرار
+   ========================================= */
+
+.btn {
+    border-radius: 6px;
+    font-weight: 600;
+    padding: 8px 16px;
+}
+
+.btn-sm {
+    padding: 6px 12px;
+}
+
+.btn-success {
+    background-color: var(--main-green);
+    border-color: var(--main-green);
+}
+
+    .btn-success:hover {
+        background-color: var(--main-green-dark);
+        border-color: var(--main-green-dark);
+    }
+
+.btn-warning {
+    background-color: var(--main-orange);
+    border-color: var(--main-orange);
+    color: #212529;
+}
+
+    .btn-warning:hover {
+        background-color: #dda300;
+        border-color: #dda300;
+        color: #212529;
+    }
+
+
+/* =========================================
+   صور الموظفين
+   ========================================= */
+
+.employee-image {
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #e5e5e5;
+}
+
+.employee-placeholder {
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    background-color: #eeeeee;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: auto;
+    font-size: 26px;
+}
+
+
+/* =========================================
+   رسائل النظام
+   ========================================= */
+
+.alert {
+    border-radius: 7px;
+}
+
+
+/* =========================================
+   Footer
+   ========================================= */
+
+footer {
+    font-size: 14px;
+}
+
+
+/* =========================================
+   الجوال والشاشات الصغيرة
+   ========================================= */
+
+@media (max-width: 767px) {
+
+    .navbar-brand span {
+        font-size: 17px !important;
+    }
+
+    .navbar-brand img {
+        width: 42px;
+    }
+
+    aside {
+        min-height: auto !important;
+        padding: 15px !important;
+    }
+
+        aside .nav-link {
+            padding: 10px !important;
+            font-size: 16px !important;
+        }
+
+    main {
+        padding: 15px !important;
+    }
+
+    .table {
+        font-size: 13px;
+    }
+
+    .btn {
+        margin-bottom: 4px;
+    }
+}
+
+/* =========================================
+   المستخدم في الشريط العلوي
+   ========================================= */
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 14px;
+    border-radius: 12px;
+    background-color: rgba(0, 0, 0, 0.10);
+    color: white;
+    min-width: 190px;
+}
+
+.user-profile-image {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid white;
+    flex-shrink: 0;
+}
+
+.user-profile-placeholder {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background-color: white;
+    color: var(--main-green);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    font-weight: bold;
+    border: 3px solid white;
+    flex-shrink: 0;
+}
+
+.user-profile-details {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: right;
+    line-height: 1.4;
+}
+
+.user-profile-name {
+    font-size: 17px;
+    font-weight: 700;
+    color: white;
+}
+
+.user-profile-role {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.85);
+}
+
+/* الجوال */
+@media (max-width: 767px) {
+
+    .user-profile {
+        min-width: auto;
+        padding: 6px 8px;
+        gap: 7px;
+    }
+
+    .user-profile-image,
+    .user-profile-placeholder {
+        width: 42px;
+        height: 42px;
+    }
+
+    .user-profile-name {
+        font-size: 14px;
+    }
+
+    .user-profile-role {
+        font-size: 11px;
+    }
 }
