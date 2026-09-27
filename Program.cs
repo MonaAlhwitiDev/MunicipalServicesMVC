@@ -1,30 +1,52 @@
 ﻿using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using MunicipalServicesMVC.Data;
+using MunicipalServicesMVC.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// إعداد الاتصال بقاعدة البيانات
+// =========================
+// Database
+// =========================
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("DefaultDatabase")
     )
 );
 
-// إعداد تسجيل الدخول
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+// =========================
+// Repository
+// =========================
+builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
+
+// =========================
+// Unit Of Work
+// =========================
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+// =========================
+// Authentication
+// =========================
+builder.Services
+    .AddAuthentication(
+        CookieAuthenticationDefaults.AuthenticationScheme
+    )
     .AddCookie(options =>
     {
         options.LoginPath = "/Account/Login";
         options.AccessDeniedPath = "/Account/AccessDenied";
     });
 
-// Add services to the container.
+// =========================
+// MVC
+// =========================
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// =========================
+// Configure HTTP Pipeline
+// =========================
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
@@ -32,17 +54,24 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
 app.UseStaticFiles();
 
 app.UseRouting();
 
-// تسجيل الدخول
+// =========================
+// Authentication + Authorization
+// =========================
 app.UseAuthentication();
 
 app.UseAuthorization();
 
+// =========================
+// Default Route
+// =========================
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Account}/{action=Login}/{id?}");
+    pattern: "{controller=Account}/{action=Login}/{id?}"
+);
 
 app.Run();
