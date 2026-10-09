@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MunicipalServicesMVC.Models;
-using MunicipalServicesMVC.Repositories;
+using MunicipalServicesMVC.Domain.Models;
+using RolePermissionsViewModel = MunicipalServicesMVC.Models.RolePermissionsViewModel;
+using MunicipalServicesMVC.Infrastructure.Repositories;
 
 namespace MunicipalServicesMVC.Controllers
 {

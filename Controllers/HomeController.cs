@@ -1,8 +1,10 @@
 ﻿using System.Diagnostics;
+using System.Linq;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MunicipalServicesMVC.Models;
-using MunicipalServicesMVC.Repositories;
+using MunicipalServicesMVC.Domain.Models;
+using ErrorViewModel = MunicipalServicesMVC.Models.ErrorViewModel;
+using MunicipalServicesMVC.Infrastructure.Repositories;
 
 namespace MunicipalServicesMVC.Controllers
 {
@@ -19,20 +21,33 @@ namespace MunicipalServicesMVC.Controllers
         // عرض لوحة التحكم
         public IActionResult Index()
         {
-            ViewBag.DepartmentsCount =
-                _unitOfWork.Departments
-                           .GetAll()
-                           .Count();
+            var departments = _unitOfWork.Departments
+                .GetAll()
+                .ToList();
 
-            ViewBag.EmployeesCount =
-                _unitOfWork.Employees
-                           .GetAllWithDepartment()
-                           .Count();
+            var employees = _unitOfWork.Employees
+                .GetAllWithDepartment()
+                .ToList();
 
-            ViewBag.ServicesCount =
-                _unitOfWork.Services
-                           .GetAllWithDepartment()
-                           .Count();
+            var services = _unitOfWork.Services
+                .GetAllWithDepartment()
+                .ToList();
+
+            // الإحصائيات
+            ViewBag.DepartmentsCount = departments.Count;
+            ViewBag.EmployeesCount = employees.Count;
+            ViewBag.ServicesCount = services.Count;
+
+            // بيانات أحدث السجلات حسب المعرف
+            ViewBag.LatestEmployees = employees
+                .OrderByDescending(e => e.Id)
+                .Take(5)
+                .ToList();
+
+            ViewBag.LatestServices = services
+                .OrderByDescending(s => s.Id)
+                .Take(5)
+                .ToList();
 
             return View();
         }

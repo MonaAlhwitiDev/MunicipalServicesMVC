@@ -1,156 +1,281 @@
 ﻿@{
-    ViewData["Title"] = "الرئيسية";
+    ViewData["Title"] = "لوحة التحكم";
+
+    var latestEmployees = ViewBag.LatestEmployees
+        as List<MunicipalServicesMVC.Domain.Models.Employee>
+        ?? new List<MunicipalServicesMVC.Domain.Models.Employee>();
+
+    var latestServices = ViewBag.LatestServices
+        as List<MunicipalServicesMVC.Domain.Models.Service>
+        ?? new List<MunicipalServicesMVC.Domain.Models.Service>();
 }
 
-<div class="container py-4">
+<div class="dashboard-page">
 
-    <div class="text-center mb-5">
+    <!-- قسم الترحيب -->
+    <section class="dashboard-header">
+        <span class="dashboard-label">لوحة الإدارة</span>
 
-        <h1 class="fw-bold mb-3">
-            لوحة التحكم
-        </h1>
+        <h1>مرحباً بك في نظام إدارة الخدمات البلدية 👋</h1>
 
-        <p class="text-muted">
-            نظرة عامة على بيانات نظام إدارة الخدمات البلدية
+        <p>
+            يمكنك متابعة الإدارات والموظفين والخدمات
+            وإدارة بيانات النظام من مكان واحد.
         </p>
+    </section>
 
-    </div>
 
-    <div class="row g-4 justify-content-center">
-
+    <!-- بطاقات الإحصائيات -->
+    <div class="row g-4 dashboard-stats">
 
         <!-- الإدارات -->
         <div class="col-lg-4 col-md-6">
+            <a asp-controller="Departments"
+               asp-action="Index"
+               class="dashboard-card-link">
 
-            <div class="card h-100 shadow-sm border-0 text-center">
-
-                <div class="card-body p-4">
-
-                    <div class="text-warning mb-3">
-
-                        <svg width="55"
-                             height="55"
-                             viewBox="0 0 16 16"
-                             fill="currentColor">
-
-                            <path d="M1 15V3h6v12H1zm8 0V0h6v15H9zM3 5h2V4H3v1zm0 3h2V7H3v1zm0 3h2v-1H3v1zm8-8h2V2h-2v1zm0 3h2V5h-2v1zm0 3h2V8h-2v1zm0 3h2v-1h-2v1z" />
-
-                        </svg>
-
+                <div class="dashboard-card">
+                    <div class="dashboard-card-top">
+                        <div class="dashboard-icon">🏢</div>
+                        <span class="dashboard-card-badge">الإدارات</span>
                     </div>
 
-                    <h4 class="mb-3">
-                        الإدارات
-                    </h4>
-
-                    <h2 class="fw-bold text-success mb-3">
+                    <div class="dashboard-number">
                         @ViewBag.DepartmentsCount
-                    </h2>
+                    </div>
 
-                    <p class="text-muted mb-4">
-                        إجمالي الإدارات الموجودة في النظام
-                    </p>
+                    <div class="dashboard-card-title">
+                        إجمالي الإدارات
+                    </div>
 
-                    <a asp-controller="Departments"
-                       asp-action="Index"
-                       class="btn btn-success">
-                        عرض الإدارات
-                    </a>
-
+                    <div class="dashboard-card-footer">
+                        <span>عرض الإدارات</span>
+                        <span>←</span>
+                    </div>
                 </div>
-
-            </div>
-
+            </a>
         </div>
 
 
-        <!-- الموظفين -->
+        <!-- الموظفون -->
         <div class="col-lg-4 col-md-6">
+            <a asp-controller="Employees"
+               asp-action="Index"
+               class="dashboard-card-link">
 
-            <div class="card h-100 shadow-sm border-0 text-center">
-
-                <div class="card-body p-4">
-
-                    <div class="text-warning mb-3">
-
-                        <svg width="55"
-                             height="55"
-                             viewBox="0 0 16 16"
-                             fill="currentColor">
-
-                            <path d="M5.5 7a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm5-1a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5zM0 14s0-4 5.5-4S11 14 11 14H0zm9.5-6c3.5 0 5.5 2 5.5 5h-3c-.2-1.7-.8-3-2.5-4V8z" />
-
-                        </svg>
-
+                <div class="dashboard-card">
+                    <div class="dashboard-card-top">
+                        <div class="dashboard-icon">👥</div>
+                        <span class="dashboard-card-badge">الموظفون</span>
                     </div>
 
-                    <h4 class="mb-3">
-                        الموظفين
-                    </h4>
-
-                    <h2 class="fw-bold text-success mb-3">
+                    <div class="dashboard-number">
                         @ViewBag.EmployeesCount
-                    </h2>
+                    </div>
 
-                    <p class="text-muted mb-4">
-                        إجمالي الموظفين الموجودين في النظام
-                    </p>
+                    <div class="dashboard-card-title">
+                        إجمالي الموظفين
+                    </div>
 
-                    <a asp-controller="Employees"
-                       asp-action="Index"
-                       class="btn btn-success">
-                        عرض الموظفين
-                    </a>
-
+                    <div class="dashboard-card-footer">
+                        <span>عرض الموظفين</span>
+                        <span>←</span>
+                    </div>
                 </div>
-
-            </div>
-
+            </a>
         </div>
 
 
         <!-- الخدمات -->
         <div class="col-lg-4 col-md-6">
+            <a asp-controller="Services"
+               asp-action="Index"
+               class="dashboard-card-link">
 
-            <div class="card h-100 shadow-sm border-0 text-center">
-
-                <div class="card-body p-4">
-
-                    <div class="text-warning mb-3">
-
-                        <svg width="55"
-                             height="55"
-                             viewBox="0 0 16 16"
-                             fill="currentColor">
-
-                            <path d="M2 3h2v2H2V3zm4 0h8v2H6V3zM2 7h2v2H2V7zm4 0h8v2H6V7zm-4 4h2v2H2v-2zm4 0h8v2H6v-2z" />
-
-                        </svg>
-
+                <div class="dashboard-card">
+                    <div class="dashboard-card-top">
+                        <div class="dashboard-icon">📋</div>
+                        <span class="dashboard-card-badge">الخدمات</span>
                     </div>
 
-                    <h4 class="mb-3">
-                        الخدمات
-                    </h4>
-
-                    <h2 class="fw-bold text-success mb-3">
+                    <div class="dashboard-number">
                         @ViewBag.ServicesCount
-                    </h2>
+                    </div>
 
-                    <p class="text-muted mb-4">
-                        إجمالي الخدمات الموجودة في النظام
-                    </p>
+                    <div class="dashboard-card-title">
+                        إجمالي الخدمات
+                    </div>
+
+                    <div class="dashboard-card-footer">
+                        <span>عرض الخدمات</span>
+                        <span>←</span>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+    </div>
+
+
+    <!-- الإجراءات السريعة -->
+    <section class="dashboard-section mb-4">
+
+        <h3 class="dashboard-section-title">
+            ⚡ إجراءات سريعة
+        </h3>
+
+        <div class="row g-3">
+
+            <!-- إضافة إدارة -->
+            <div class="col-md-4">
+                <a asp-controller="Departments"
+                   asp-action="Create"
+                   class="quick-action">
+                    <span>🏢</span>
+                    إضافة إدارة جديدة
+                </a>
+            </div>
+
+            <!-- إضافة موظف -->
+            <div class="col-md-4">
+                <a asp-controller="Employees"
+                   asp-action="Create"
+                   class="quick-action">
+                    <span>👤</span>
+                    إضافة موظف جديد
+                </a>
+            </div>
+
+            <!-- إضافة خدمة -->
+            <div class="col-md-4">
+                <a asp-controller="Services"
+                   asp-action="Create"
+                   class="quick-action">
+                    <span>📋</span>
+                    إضافة خدمة جديدة
+                </a>
+            </div>
+
+        </div>
+    </section>
+
+
+    <!-- أحدث البيانات -->
+    <div class="row g-4">
+
+        <!-- أحدث الموظفين -->
+        <div class="col-xl-6">
+            <section class="dashboard-section h-100">
+
+                <div class="dashboard-section-heading">
+                    <h3 class="dashboard-section-title">
+                        👥 أحدث الموظفين
+                    </h3>
+
+                    <a asp-controller="Employees"
+                       asp-action="Index"
+                       class="dashboard-more-link">
+                        عرض الكل ←
+                    </a>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle text-center">
+
+                        <thead>
+                            <tr>
+                                <th>اسم الموظف</th>
+                                <th>المسمى الوظيفي</th>
+                                <th>الإدارة</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @if (latestEmployees.Any())
+                            {
+                                foreach (var employee in latestEmployees)
+                                {
+                                    <tr>
+                                        <td>@employee.Name</td>
+                                        <td>@employee.JobTitle</td>
+                                        <td>
+                                            @(employee.Department?.Name ?? "غير محددة")
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="3" class="text-muted py-4">
+                                        لا يوجد موظفون حاليًا
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+
+                    </table>
+                </div>
+
+            </section>
+        </div>
+
+
+        <!-- أحدث الخدمات -->
+        <div class="col-xl-6">
+            <section class="dashboard-section h-100">
+
+                <div class="dashboard-section-heading">
+                    <h3 class="dashboard-section-title">
+                        📋 أحدث الخدمات
+                    </h3>
 
                     <a asp-controller="Services"
                        asp-action="Index"
-                       class="btn btn-success">
-                        عرض الخدمات
+                       class="dashboard-more-link">
+                        عرض الكل ←
                     </a>
-
                 </div>
 
-            </div>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle text-center">
 
+                        <thead>
+                            <tr>
+                                <th>اسم الخدمة</th>
+                                <th>الإدارة</th>
+                                <th>الوصف</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @if (latestServices.Any())
+                            {
+                                foreach (var service in latestServices)
+                                {
+                                    <tr>
+                                        <td>@service.Name</td>
+                                        <td>
+                                            @(service.Department?.Name ?? "غير محددة")
+                                        </td>
+                                        <td>@service.Description</td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="3" class="text-muted py-4">
+                                        لا توجد خدمات حاليًا
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+
+                    </table>
+                </div>
+
+            </section>
         </div>
 
     </div>

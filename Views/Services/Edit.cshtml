@@ -1,44 +1,64 @@
-﻿@model MunicipalServicesMVC.Models.Service
+﻿@model MunicipalServicesMVC.Domain.Models.Service
 
 @{
     ViewData["Title"] = "تعديل الخدمة";
 }
 
-<div class="container py-4" dir="rtl">
+<div class="container-fluid py-4" dir="rtl">
 
+    <!-- عنوان الصفحة -->
+    <div class="mb-4">
+
+        <h2 class="fw-bold mb-0"
+            style="color:var(--main-green-dark);">
+            تعديل بيانات الخدمة
+        </h2>
+
+    </div>
+
+    <!-- بطاقة تعديل الخدمة -->
     <div class="row justify-content-center">
 
-        <div class="col-md-6">
+        <div class="col-xl-9 col-lg-10 col-md-12">
 
-            <div class="card shadow-sm">
+            <div class="card border-0 shadow-sm">
 
-                <div class="card-header bg-success text-white">
-                    <h4 class="mb-0">
-                        تعديل الخدمة
-                    </h4>
+                <!-- الشريط الأخضر -->
+                <div class="card-header bg-success text-white py-3">
+
+                    <h5 class="fw-bold mb-0">
+                        بيانات الخدمة
+                    </h5>
+
                 </div>
 
-                <div class="card-body">
+                <div class="card-body p-4">
 
+                    <!-- نموذج تعديل الخدمة -->
                     <form asp-action="Edit" method="post">
 
                         @Html.AntiForgeryToken()
 
-                        <input type="hidden" asp-for="Id" />
+                        <!-- رقم الخدمة -->
+                        <input type="hidden"
+                               asp-for="Id" />
 
+                        <!-- رسائل التحقق -->
                         <div asp-validation-summary="ModelOnly"
                              class="text-danger mb-3">
                         </div>
 
+                        <!-- اسم الخدمة -->
                         <div class="mb-3">
 
                             <label asp-for="Name"
-                                   class="form-label">
+                                   class="form-label fw-bold">
                                 اسم الخدمة
                             </label>
 
                             <input asp-for="Name"
-                                   class="form-control" />
+                                   class="form-control"
+                                   placeholder="أدخل اسم الخدمة" />
 
                             <span asp-validation-for="Name"
                                   class="text-danger">
@@ -46,16 +66,18 @@
 
                         </div>
 
+                        <!-- وصف الخدمة -->
                         <div class="mb-3">
 
                             <label asp-for="Description"
-                                   class="form-label">
+                                   class="form-label fw-bold">
                                 وصف الخدمة
                             </label>
 
                             <textarea asp-for="Description"
                                       class="form-control"
-                                      rows="4"></textarea>
+                                      rows="4"
+                                      placeholder="أدخل وصف الخدمة"></textarea>
 
                             <span asp-validation-for="Description"
                                   class="text-danger">
@@ -63,10 +85,11 @@
 
                         </div>
 
-                        <div class="mb-3">
+                        <!-- الإدارة -->
+                        <div class="mb-4">
 
                             <label asp-for="DepartmentId"
-                                   class="form-label">
+                                   class="form-label fw-bold">
                                 الإدارة
                             </label>
 
@@ -81,15 +104,22 @@
 
                         </div>
 
-                        <button type="submit"
-                                class="btn btn-warning">
-                            حفظ التعديلات
-                        </button>
+                        <!-- أزرار العمليات -->
+                        <div class="d-flex justify-content-start gap-2 pt-3 border-top">
 
-                        <a asp-action="Index"
-                           class="btn btn-success">
-                            رجوع
-                        </a>
+                            <!-- حفظ التعديلات -->
+                            <button type="submit"
+                                    class="btn btn-success px-4">
+                                حفظ التعديلات
+                            </button>
+
+                            <!-- رجوع -->
+                            <a asp-action="Index"
+                               class="btn btn-warning px-4">
+                                رجوع
+                            </a>
+
+                        </div>
 
                     </form>
 

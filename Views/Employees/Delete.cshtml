@@ -1,4 +1,4 @@
-﻿@model MunicipalServicesMVC.Models.Employee
+﻿@model MunicipalServicesMVC.Domain.Models.Employee
 
 @{
     ViewData["Title"] = "حذف الموظف";
@@ -8,79 +8,96 @@
 
     <div class="row justify-content-center">
 
-        <div class="col-md-6">
+        <div class="col-lg-8 col-md-10">
 
-            <div class="card shadow-sm">
+            <div class="card shadow-sm border-0">
 
-                <div class="card-header bg-success text-white">
+                <!-- عنوان البطاقة -->
+                <div class="card-header bg-success text-white py-3">
+
                     <h4 class="mb-0">
                         حذف الموظف
                     </h4>
+
                 </div>
 
-                <div class="card-body">
+                <div class="card-body p-4">
 
-                    <div class="alert alert-danger text-center">
-                        هل أنت متأكد من حذف هذا الموظف؟
+                    <!-- رسالة تأكيد الحذف -->
+                    <div class="alert alert-danger text-center mb-4">
+
+                        <strong>
+                            هل أنت متأكد من حذف هذا الموظف؟
+                        </strong>
+
+                        <div class="mt-2">
+                            سيتم حذف بيانات الموظف بعد التأكيد.
+                        </div>
+
                     </div>
 
-
+                    <!-- اسم الموظف -->
                     <div class="mb-3">
 
-                        <label class="form-label">
+                        <label class="form-label fw-bold">
                             اسم الموظف
                         </label>
 
-                        <input value="@Model.Name"
+                        <input type="text"
+                               value="@Model.Name"
                                class="form-control"
                                readonly />
 
                     </div>
 
-
+                    <!-- المسمى الوظيفي -->
                     <div class="mb-3">
 
-                        <label class="form-label">
+                        <label class="form-label fw-bold">
                             المسمى الوظيفي
                         </label>
 
-                        <input value="@Model.JobTitle"
+                        <input type="text"
+                               value="@Model.JobTitle"
                                class="form-control"
                                readonly />
 
                     </div>
 
+                    <!-- الإدارة -->
+                    <div class="mb-4">
 
-                    <div class="mb-3">
-
-                        <label class="form-label">
+                        <label class="form-label fw-bold">
                             الإدارة
                         </label>
 
-                        <input value="@Model.Department?.Name"
+                        <input type="text"
+                               value="@Model.Department?.Name"
                                class="form-control"
                                readonly />
 
                     </div>
 
-
-                    <form asp-action="Delete"
-                          method="post">
+                    <!-- نموذج الحذف -->
+                    <form asp-action="Delete" method="post">
 
                         @Html.AntiForgeryToken()
 
-                        <input type="hidden"
-                               asp-for="Id" />
+                        <input type="hidden" asp-for="Id" />
 
-                        <button type="submit"
-                                class="btn btn-danger">
-                            حذف
-                        </button>
+                        <div class="d-flex justify-content-end gap-2 pt-3 border-top">
 
-                        <a asp-action="Index"
-                           class="btn btn-warning">
-                            رجوع
-                        </a>
+                            <a asp-action="Index"
+                               class="btn btn-warning px-4">
+                                رجوع
+                            </a>
+
+                            <button type="submit"
+                                    class="btn btn-danger px-4">
+                                تأكيد الحذف
+                            </button>
+
+                        </div>
 
                     </form>
 

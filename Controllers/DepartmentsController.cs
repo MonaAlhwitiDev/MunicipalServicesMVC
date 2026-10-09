@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MunicipalServicesMVC.DTOs;
-using MunicipalServicesMVC.Models;
-using MunicipalServicesMVC.Repositories;
+using MunicipalServicesMVC.Domain.Models;
+using MunicipalServicesMVC.Infrastructure.Repositories;
 
 namespace MunicipalServicesMVC.Controllers
 {
@@ -22,7 +22,7 @@ namespace MunicipalServicesMVC.Controllers
         public IActionResult Index()
         {
             IEnumerable<Department> departments =
-                _unitOfWork.Departments.GetAll();
+                _unitOfWork.Departments.GetAllWithDetails();
 
             return View(departments);
         }
@@ -53,7 +53,6 @@ namespace MunicipalServicesMVC.Controllers
                 };
 
                 _unitOfWork.Departments.Add(department);
-
                 _unitOfWork.Save();
 
                 return RedirectToAction(nameof(Index));
@@ -111,10 +110,7 @@ namespace MunicipalServicesMVC.Controllers
             {
                 oldDepartment.Name = department.Name;
 
-                _unitOfWork.Departments.Update(
-                    oldDepartment
-                );
-
+                _unitOfWork.Departments.Update(oldDepartment);
                 _unitOfWork.Save();
 
                 return RedirectToAction(nameof(Index));
@@ -166,10 +162,7 @@ namespace MunicipalServicesMVC.Controllers
                 return NotFound();
             }
 
-            _unitOfWork.Departments.Delete(
-                department
-            );
-
+            _unitOfWork.Departments.Delete(department);
             _unitOfWork.Save();
 
             return RedirectToAction(nameof(Index));

@@ -1,44 +1,66 @@
-﻿@model MunicipalServicesMVC.Models.Service
+﻿@model MunicipalServicesMVC.Domain.Models.Service
 
 @{
     ViewData["Title"] = "حذف الخدمة";
 }
 
-<div class="container py-4" dir="rtl">
+<div class="container-fluid py-4" dir="rtl">
 
+    <!-- عنوان الصفحة -->
+    <div class="mb-4">
+
+        <h2 class="fw-bold mb-0"
+            style="color:var(--main-green-dark);">
+            حذف الخدمة
+        </h2>
+
+    </div>
+
+    <!-- بطاقة حذف الخدمة -->
     <div class="row justify-content-center">
 
-        <div class="col-md-6">
+        <div class="col-xl-9 col-lg-10 col-md-12">
 
-            <div class="card shadow-sm">
+            <div class="card border-0 shadow-sm">
 
-                <div class="card-header bg-success text-white">
-                    <h4 class="mb-0">
-                        حذف الخدمة
-                    </h4>
+                <!-- الشريط الأخضر -->
+                <div class="card-header bg-success text-white py-3">
+
+                    <h5 class="fw-bold mb-0">
+                        بيانات الخدمة
+                    </h5>
+
                 </div>
 
-                <div class="card-body">
+                <div class="card-body p-4">
 
-                    <div class="alert alert-danger text-center">
-                        هل أنت متأكد من حذف هذه الخدمة؟
+                    <!-- رسالة تأكيد الحذف -->
+                    <div class="alert alert-danger text-center mb-4">
+
+                        <strong>
+                            هل أنت متأكد من حذف هذه الخدمة؟
+                        </strong>
+
                     </div>
 
+                    <!-- اسم الخدمة -->
                     <div class="mb-3">
 
-                        <label class="form-label">
+                        <label class="form-label fw-bold">
                             اسم الخدمة
                         </label>
 
-                        <input value="@Model.Name"
+                        <input type="text"
+                               value="@Model.Name"
                                class="form-control"
                                readonly />
 
                     </div>
 
+                    <!-- وصف الخدمة -->
                     <div class="mb-3">
 
-                        <label class="form-label">
+                        <label class="form-label fw-bold">
                             وصف الخدمة
                         </label>
 
@@ -48,35 +70,45 @@
 
                     </div>
 
-                    <div class="mb-3">
+                    <!-- الإدارة -->
+                    <div class="mb-4">
 
-                        <label class="form-label">
+                        <label class="form-label fw-bold">
                             الإدارة
                         </label>
 
-                        <input value="@Model.Department?.Name"
+                        <input type="text"
+                               value="@Model.Department?.Name"
                                class="form-control"
                                readonly />
 
                     </div>
 
-                    <form asp-action="Delete"
-                          method="post">
+                    <!-- نموذج الحذف -->
+                    <form asp-action="Delete" method="post">
 
                         @Html.AntiForgeryToken()
 
+                        <!-- رقم الخدمة -->
                         <input type="hidden"
                                asp-for="Id" />
 
-                        <button type="submit"
-                                class="btn btn-danger">
-                            حذف
-                        </button>
+                        <!-- أزرار العمليات -->
+                        <div class="d-flex justify-content-start gap-2 pt-3 border-top">
 
-                        <a asp-action="Index"
-                           class="btn btn-warning">
-                            رجوع
-                        </a>
+                            <!-- زر تأكيد الحذف -->
+                            <button type="submit"
+                                    class="btn btn-danger px-4">
+                                تأكيد الحذف
+                            </button>
+
+                            <!-- زر الرجوع -->
+                            <a asp-action="Index"
+                               class="btn btn-warning px-4">
+                                رجوع
+                            </a>
+
+                        </div>
 
                     </form>
 

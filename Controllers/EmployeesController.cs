@@ -1,18 +1,24 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using MunicipalServicesMVC.Models;
-using MunicipalServicesMVC.Repositories;
+using MunicipalServicesMVC.Application.DTOs;
+using MunicipalServicesMVC.Domain.Models;
+using MunicipalServicesMVC.Infrastructure.Repositories;
+using MunicipalServicesMVC.Application.Services;
 
 namespace MunicipalServicesMVC.Controllers
 {
     [Authorize]
     public class EmployeesController : Controller
     {
+        private readonly IEmployeeService _employeeService;
         private readonly IUnitOfWork _unitOfWork;
 
-        public EmployeesController(IUnitOfWork unitOfWork)
+        public EmployeesController(
+            IEmployeeService employeeService,
+            IUnitOfWork unitOfWork)
         {
+            _employeeService = employeeService;
             _unitOfWork = unitOfWork;
         }
 
@@ -21,8 +27,8 @@ namespace MunicipalServicesMVC.Controllers
         // =========================
         public IActionResult Index()
         {
-            IEnumerable<Employee> employees =
-                _unitOfWork.Employees.GetAllWithDepartment();
+            IEnumerable<EmployeeDto> employees =
+                _employeeService.GetAllEmployees();
 
             var employeeImages =
                 _unitOfWork.Employees.GetLatestImages();
@@ -38,7 +44,7 @@ namespace MunicipalServicesMVC.Controllers
         public IActionResult Create()
         {
             ViewBag.DepartmentId = new SelectList(
-                _unitOfWork.Departments.GetAll(),
+                _employeeService.GetAllDepartments(),
                 "Id",
                 "Name"
             );
@@ -55,14 +61,13 @@ namespace MunicipalServicesMVC.Controllers
         {
             if (ModelState.IsValid)
             {
-                _unitOfWork.Employees.Add(employee);
-                _unitOfWork.Save();
+                _employeeService.AddEmployee(employee);
 
                 return RedirectToAction(nameof(Index));
             }
 
             ViewBag.DepartmentId = new SelectList(
-                _unitOfWork.Departments.GetAll(),
+                _employeeService.GetAllDepartments(),
                 "Id",
                 "Name",
                 employee.DepartmentId
@@ -77,7 +82,7 @@ namespace MunicipalServicesMVC.Controllers
         public IActionResult Edit(int id)
         {
             Employee? employee =
-                _unitOfWork.Employees.GetById(id);
+                _employeeService.GetEmployeeById(id);
 
             if (employee == null)
             {
@@ -85,7 +90,7 @@ namespace MunicipalServicesMVC.Controllers
             }
 
             ViewBag.DepartmentId = new SelectList(
-                _unitOfWork.Departments.GetAll(),
+                _employeeService.GetAllDepartments(),
                 "Id",
                 "Name",
                 employee.DepartmentId
@@ -103,14 +108,13 @@ namespace MunicipalServicesMVC.Controllers
         {
             if (ModelState.IsValid)
             {
-                _unitOfWork.Employees.Update(employee);
-                _unitOfWork.Save();
+                _employeeService.UpdateEmployee(employee);
 
                 return RedirectToAction(nameof(Index));
             }
 
             ViewBag.DepartmentId = new SelectList(
-                _unitOfWork.Departments.GetAll(),
+                _employeeService.GetAllDepartments(),
                 "Id",
                 "Name",
                 employee.DepartmentId
@@ -125,8 +129,7 @@ namespace MunicipalServicesMVC.Controllers
         public IActionResult Delete(int id)
         {
             Employee? employee =
-                _unitOfWork.Employees
-                           .GetByIdWithDepartment(id);
+                _employeeService.GetEmployeeById(id);
 
             if (employee == null)
             {
@@ -144,15 +147,14 @@ namespace MunicipalServicesMVC.Controllers
         public IActionResult Delete(Employee employee)
         {
             Employee? existingEmployee =
-                _unitOfWork.Employees.GetById(employee.Id);
+                _employeeService.GetEmployeeById(employee.Id);
 
             if (existingEmployee == null)
             {
                 return NotFound();
             }
 
-            _unitOfWork.Employees.Delete(existingEmployee);
-            _unitOfWork.Save();
+            _employeeService.DeleteEmployee(existingEmployee);
 
             return RedirectToAction(nameof(Index));
         }
@@ -164,7 +166,7 @@ namespace MunicipalServicesMVC.Controllers
         public IActionResult ManageFiles(int id)
         {
             Employee? employee =
-                _unitOfWork.Employees.GetById(id);
+                _employeeService.GetEmployeeById(id);
 
             if (employee == null)
             {
@@ -200,8 +202,9 @@ namespace MunicipalServicesMVC.Controllers
             List<IFormFile> fileEmployees)
         {
             Employee? employee =
-                _unitOfWork.Employees
-                           .GetById(employeeFile.EmployeeId);
+                _employeeService.GetEmployeeById(
+                    employeeFile.EmployeeId
+                );
 
             if (employee == null)
             {

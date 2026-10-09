@@ -1,92 +1,152 @@
-﻿@model MunicipalServicesMVC.Models.User
+﻿@model MunicipalServicesMVC.Domain.Models.User
 
 @{
     ViewData["Title"] = "إضافة مستخدم";
 }
 
-<div class="container mt-4">
+<div class="container-fluid py-4" dir="rtl">
 
-    <h2 class="mb-4">إضافة مستخدم جديد</h2>
+    <!-- عنوان الصفحة -->
+    <div class="mb-4">
+        <h2 class="fw-bold mb-0"
+            style="color:var(--main-green-dark);">
+            إضافة مستخدم جديد
+        </h2>
+    </div>
 
-    <div class="card shadow-sm">
-        <div class="card-body">
+    <div class="row justify-content-center">
 
-            <form asp-action="Create" method="post">
+        <div class="col-xl-8 col-lg-9 col-md-11">
 
-                <div asp-validation-summary="ModelOnly"
-                     class="text-danger mb-3">
+            <div class="card border-0 shadow-sm">
+
+                <!-- عنوان البطاقة -->
+                <div class="card-header bg-success text-white py-3">
+                    <h5 class="fw-bold mb-0">
+                        بيانات المستخدم
+                    </h5>
                 </div>
 
-                <div class="mb-3">
-                    <label asp-for="Name"
-                           class="form-label">
-                    </label>
+                <div class="card-body p-4">
 
-                    <input asp-for="Name"
-                           class="form-control" />
+                    <form asp-action="Create" method="post">
 
-                    <span asp-validation-for="Name"
-                          class="text-danger">
-                    </span>
+                        @Html.AntiForgeryToken()
+
+                        <!-- رسائل التحقق -->
+                        <div asp-validation-summary="ModelOnly"
+                             class="text-danger mb-3">
+                        </div>
+
+                        <!-- اسم المستخدم -->
+                        <div class="mb-4">
+
+                            <label asp-for="Name"
+                                   class="form-label fw-bold">
+                                اسم المستخدم
+                            </label>
+
+                            <input asp-for="Name"
+                                   class="form-control"
+                                   placeholder="أدخل اسم المستخدم" />
+
+                            <span asp-validation-for="Name"
+                                  class="text-danger">
+                            </span>
+
+                        </div>
+
+                        <!-- البريد الإلكتروني -->
+                        <div class="mb-4">
+
+                            <label asp-for="Email"
+                                   class="form-label fw-bold">
+                                البريد الإلكتروني
+                            </label>
+
+                            <input asp-for="Email"
+                                   class="form-control"
+                                   placeholder="أدخل البريد الإلكتروني" />
+
+                            <span asp-validation-for="Email"
+                                  class="text-danger">
+                            </span>
+
+                        </div>
+
+                        <!-- كلمة المرور -->
+                        <div class="mb-4">
+
+                            <label asp-for="Password"
+                                   class="form-label fw-bold">
+                                كلمة المرور
+                            </label>
+
+                            <input asp-for="Password"
+                                   type="password"
+                                   class="form-control"
+                                   placeholder="أدخل كلمة المرور"
+                                   autocomplete="new-password" />
+
+                            <span asp-validation-for="Password"
+                                  class="text-danger">
+                            </span>
+
+                        </div>
+
+                        <!-- الدور -->
+                        <div class="mb-4">
+
+                            <label asp-for="RoleId"
+                                   class="form-label fw-bold">
+                                الدور
+                            </label>
+
+                            <select asp-for="RoleId"
+                                    asp-items="ViewBag.Roles"
+                                    class="form-select">
+
+                                <option value="">
+                                    اختر الدور
+                                </option>
+
+                            </select>
+
+                            <span asp-validation-for="RoleId"
+                                  class="text-danger">
+                            </span>
+
+                        </div>
+
+                        <!-- أزرار الإجراءات -->
+                        <div class="d-flex flex-wrap justify-content-end gap-2 pt-3 border-top">
+
+                            <a asp-action="Index"
+                               class="btn btn-warning px-4">
+                                رجوع
+                            </a>
+
+                            <button type="submit"
+                                    class="btn btn-success px-4">
+                                حفظ المستخدم
+                            </button>
+
+                        </div>
+
+                    </form>
+
                 </div>
 
-                <div class="mb-3">
-                    <label asp-for="Email"
-                           class="form-label">
-                    </label>
-
-                    <input asp-for="Email"
-                           class="form-control" />
-
-                    <span asp-validation-for="Email"
-                          class="text-danger">
-                    </span>
-                </div>
-
-                <div class="mb-3">
-                    <label asp-for="Password"
-                           class="form-label">
-                    </label>
-
-                    <input asp-for="Password"
-                           type="password"
-                           class="form-control" />
-
-                    <span asp-validation-for="Password"
-                          class="text-danger">
-                    </span>
-                </div>
-
-                <div class="mb-3">
-                    <label asp-for="RoleId"
-                           class="form-label">
-                        الدور
-                    </label>
-
-                    <select asp-for="RoleId"
-                            asp-items="ViewBag.Roles"
-                            class="form-select">
-                        <option value="">اختر الدور</option>
-                    </select>
-
-                    <span asp-validation-for="RoleId"
-                          class="text-danger">
-                    </span>
-                </div>
-
-                <button type="submit"
-                        class="btn btn-success">
-                    حفظ
-                </button>
-
-                <a asp-action="Index"
-                   class="btn btn-warning">
-                    رجوع
-                </a>
-
-            </form>
+            </div>
 
         </div>
+
     </div>
 
 </div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

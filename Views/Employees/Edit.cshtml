@@ -1,47 +1,64 @@
-﻿@model MunicipalServicesMVC.Models.Employee
+﻿@model MunicipalServicesMVC.Domain.Models.Employee
 
 @{
     ViewData["Title"] = "تعديل الموظف";
 }
 
-<div class="container py-4" dir="rtl">
+<div class="container-fluid py-4" dir="rtl">
 
+    <!-- عنوان الصفحة -->
+    <div class="mb-4">
+
+        <h2 class="fw-bold mb-0"
+            style="color:var(--main-green-dark);">
+            تعديل بيانات الموظف
+        </h2>
+
+    </div>
+
+    <!-- بطاقة تعديل الموظف -->
     <div class="row justify-content-center">
 
-        <div class="col-md-6">
+        <div class="col-xl-9 col-lg-10 col-md-12">
 
-            <div class="card shadow-sm">
+            <div class="card border-0 shadow-sm">
 
-                <div class="card-header bg-success text-white">
-                    <h4 class="mb-0">
-                        تعديل الموظف
-                    </h4>
+                <!-- الشريط الأخضر -->
+                <div class="card-header bg-success text-white py-3">
+
+                    <h5 class="fw-bold mb-0">
+                        بيانات الموظف
+                    </h5>
+
                 </div>
 
-                <div class="card-body">
+                <div class="card-body p-4">
 
-                    <form asp-action="Edit"
-                          method="post">
+                    <!-- نموذج تعديل الموظف -->
+                    <form asp-action="Edit" method="post">
 
                         @Html.AntiForgeryToken()
 
+                        <!-- رقم الموظف -->
                         <input type="hidden"
                                asp-for="Id" />
 
+                        <!-- رسائل التحقق -->
                         <div asp-validation-summary="ModelOnly"
                              class="text-danger mb-3">
                         </div>
 
-
+                        <!-- اسم الموظف -->
                         <div class="mb-3">
 
                             <label asp-for="Name"
-                                   class="form-label">
+                                   class="form-label fw-bold">
                                 اسم الموظف
                             </label>
 
                             <input asp-for="Name"
-                                   class="form-control" />
+                                   class="form-control"
+                                   placeholder="أدخل اسم الموظف" />
 
                             <span asp-validation-for="Name"
                                   class="text-danger">
@@ -49,16 +66,17 @@
 
                         </div>
 
-
+                        <!-- المسمى الوظيفي -->
                         <div class="mb-3">
 
                             <label asp-for="JobTitle"
-                                   class="form-label">
+                                   class="form-label fw-bold">
                                 المسمى الوظيفي
                             </label>
 
                             <input asp-for="JobTitle"
-                                   class="form-control" />
+                                   class="form-control"
+                                   placeholder="أدخل المسمى الوظيفي" />
 
                             <span asp-validation-for="JobTitle"
                                   class="text-danger">
@@ -66,11 +84,11 @@
 
                         </div>
 
-
-                        <div class="mb-3">
+                        <!-- الإدارة -->
+                        <div class="mb-4">
 
                             <label asp-for="DepartmentId"
-                                   class="form-label">
+                                   class="form-label fw-bold">
                                 الإدارة
                             </label>
 
@@ -85,16 +103,22 @@
 
                         </div>
 
+                        <!-- أزرار العمليات -->
+                        <div class="d-flex justify-content-start gap-2 pt-3 border-top">
 
-                        <button type="submit"
-                                class="btn btn-warning">
-                            حفظ التعديلات
-                        </button>
+                            <!-- حفظ التعديلات -->
+                            <button type="submit"
+                                    class="btn btn-success px-4">
+                                حفظ التعديلات
+                            </button>
 
-                        <a asp-action="Index"
-                           class="btn btn-success">
-                            رجوع
-                        </a>
+                            <!-- رجوع -->
+                            <a asp-action="Index"
+                               class="btn btn-warning px-4">
+                                رجوع
+                            </a>
+
+                        </div>
 
                     </form>
 
@@ -107,7 +131,6 @@
     </div>
 
 </div>
-
 
 @section Scripts {
     @{

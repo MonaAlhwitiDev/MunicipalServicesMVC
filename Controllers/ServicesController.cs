@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using MunicipalServicesMVC.Models;
-using MunicipalServicesMVC.Repositories;
+using MunicipalServicesMVC.Domain.Models;
+using MunicipalServicesMVC.Infrastructure.Repositories;
 
 namespace MunicipalServicesMVC.Controllers
 {

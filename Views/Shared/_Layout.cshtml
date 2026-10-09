@@ -1,29 +1,21 @@
 ﻿<!DOCTYPE html>
-
 <html lang="ar" dir="rtl">
 
 <head>
-
     <meta charset="utf-8" />
 
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0" />
 
-    <title>
-        @ViewData["Title"] - نظام إدارة الخدمات البلدية
-    </title>
+    <title>@ViewData["Title"] - نظام إدارة الخدمات البلدية</title>
 
-    <!-- Bootstrap -->
     <link rel="stylesheet"
           href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
 
-    <!-- CSS الخاص بالنظام -->
     <link rel="stylesheet"
           href="~/css/site.css"
           asp-append-version="true" />
-
 </head>
-
 
 <body class="bg-light">
 
@@ -40,35 +32,68 @@
             User.FindFirst(
                 System.Security.Claims.ClaimTypes.Role
             )?.Value;
+
+        var currentController =
+            ViewContext.RouteData.Values["controller"]?.ToString();
     }
 
-
-    <!-- ========================= -->
     <!-- الشريط العلوي -->
-    <!-- ========================= -->
+    <nav class="navbar system-navbar">
 
-    <nav class="navbar navbar-dark bg-success shadow-sm">
+        <div class="container-fluid d-flex align-items-center justify-content-between gap-3">
 
-        <div class="container-fluid d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center gap-3">
 
+                <!-- زر فتح وإغلاق القائمة -->
+                <button type="button"
+                        id="sidebarToggle"
+                        class="sidebar-toggle"
+                        aria-label="فتح أو إغلاق القائمة"
+                        aria-controls="systemSidebar"
+                        aria-expanded="true">
 
-            <!-- شعار واسم النظام -->
-            <a class="navbar-brand d-flex align-items-center gap-3"
-               asp-controller="Home"
-               asp-action="Index">
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                         width="24"
+                         height="24"
+                         viewBox="0 0 24 24"
+                         fill="none"
+                         stroke="currentColor"
+                         stroke-width="2"
+                         stroke-linecap="round">
 
-                <img src="~/images/tabuk-logo.png"
-                     alt="شعار أمانة منطقة تبوك"
-                     width="55" />
+                        <path d="M4 6h16M4 12h16M4 18h16" />
 
-                <span class="fw-bold fs-4">
-                    نظام إدارة الخدمات البلدية
-                </span>
+                    </svg>
 
-            </a>
+                </button>
 
+                <!-- الشعار واسم النظام -->
+                <a class="navbar-brand system-brand"
+                   asp-controller="Home"
+                   asp-action="Index">
 
-            <!-- المستخدم المسجل -->
+                    <div class="system-logo">
+                        <img src="~/images/tabuk-logo.png"
+                             alt="شعار أمانة منطقة تبوك" />
+                    </div>
+
+                    <div class="system-brand-text">
+
+                        <span class="system-title">
+                            نظام إدارة الخدمات البلدية
+                        </span>
+
+                        <small>
+                            لوحة الإدارة الرئيسية
+                        </small>
+
+                    </div>
+
+                </a>
+
+            </div>
+
+            <!-- بيانات المستخدم -->
             @if (User.Identity?.IsAuthenticated == true)
             {
                 <div class="user-profile">
@@ -82,12 +107,9 @@
                     else
                     {
                         <div class="user-profile-placeholder">
-
                             @employeeName.Substring(0, 1)
-
                         </div>
                     }
-
 
                     <div class="user-profile-details">
 
@@ -107,167 +129,158 @@
                 </div>
             }
 
-
         </div>
 
     </nav>
 
+    <!-- القائمة والمحتوى -->
+    <div id="systemLayout"
+         class="municipal-layout sidebar-open">
 
-    <!-- ========================= -->
-    <!-- الصفحة -->
-    <!-- ========================= -->
+        <!-- القائمة الجانبية -->
+        <aside id="systemSidebar"
+               class="system-sidebar municipal-sidebar bg-success text-white">
 
-    <div class="container-fluid">
+            <div class="sidebar-heading">
+                القائمة الرئيسية
+            </div>
 
-        <div class="row">
+            <nav class="nav flex-column municipal-menu">
 
+                <a asp-controller="Home"
+                   asp-action="Index"
+                   class="nav-link @(currentController == "Home" ? "active" : "")">
 
-            <!-- ========================= -->
-            <!-- القائمة الجانبية -->
-            <!-- ========================= -->
+                    <span class="menu-icon">⌂</span>
+                    <span class="menu-text">الرئيسية</span>
 
-            <aside class="col-md-3 col-lg-2 bg-success text-white min-vh-100 p-4">
+                </a>
 
-                <div class="text-center mb-4">
+                <a asp-controller="Departments"
+                   asp-action="Index"
+                   class="nav-link @(currentController == "Departments" ? "active" : "")">
 
-                    <span class="fw-bold fs-4">
-                        القائمة الرئيسية
-                    </span>
+                    <span class="menu-icon">▦</span>
+                    <span class="menu-text">الإدارات</span>
 
-                </div>
+                </a>
 
+                <a asp-controller="Employees"
+                   asp-action="Index"
+                   class="nav-link @(currentController == "Employees" ? "active" : "")">
 
-                <nav class="nav flex-column">
+                    <span class="menu-icon">👥</span>
+                    <span class="menu-text">الموظفين</span>
 
+                </a>
 
-                    <!-- الرئيسية -->
-                    <a asp-controller="Home"
+                <a asp-controller="Services"
+                   asp-action="Index"
+                   class="nav-link @(currentController == "Services" ? "active" : "")">
+
+                    <span class="menu-icon">▤</span>
+                    <span class="menu-text">الخدمات</span>
+
+                </a>
+
+                @if (User.IsInRole("مدير النظام"))
+                {
+                    <a asp-controller="Users"
                        asp-action="Index"
-                       class="nav-link text-white rounded fs-5 fw-semibold py-3">
+                       class="nav-link @(currentController == "Users" ? "active" : "")">
 
-                        الرئيسية
+                        <span class="menu-icon">♙</span>
+                        <span class="menu-text">المستخدمين</span>
 
                     </a>
 
-
-                    <!-- الإدارات -->
-                    <a asp-controller="Departments"
+                    <a asp-controller="Roles"
                        asp-action="Index"
-                       class="nav-link text-white rounded fs-5 fw-semibold py-3">
+                       class="nav-link @(currentController == "Roles" ? "active" : "")">
 
-                        الإدارات
+                        <span class="menu-icon">◇</span>
+                        <span class="menu-text">الأدوار</span>
 
                     </a>
 
-
-                    <!-- الموظفين -->
-                    <a asp-controller="Employees"
+                    <a asp-controller="Permissions"
                        asp-action="Index"
-                       class="nav-link text-white rounded fs-5 fw-semibold py-3">
+                       class="nav-link @(currentController == "Permissions" ? "active" : "")">
 
-                        الموظفين
-
-                    </a>
-
-
-                    <!-- الخدمات -->
-                    <a asp-controller="Services"
-                       asp-action="Index"
-                       class="nav-link text-white rounded fs-5 fw-semibold py-3">
-
-                        الخدمات
+                        <span class="menu-icon">⚿</span>
+                        <span class="menu-text">الصلاحيات</span>
 
                     </a>
+                }
 
+                <a asp-controller="Account"
+                   asp-action="Logout"
+                   class="nav-link logout-link">
 
-                    @if (User.IsInRole("مدير النظام"))
-                    {
+                    <span class="menu-icon">↪</span>
+                    <span class="menu-text">تسجيل الخروج</span>
 
-                        <!-- المستخدمين -->
-                        <a asp-controller="Users"
-                           asp-action="Index"
-                           class="nav-link text-white rounded fs-5 fw-semibold py-3">
+                </a>
 
-                            المستخدمين
+            </nav>
 
-                        </a>
+        </aside>
 
+        <!-- محتوى الصفحات -->
+        <main class="municipal-main">
 
-                        <!-- الأدوار -->
-                        <a asp-controller="Roles"
-                           asp-action="Index"
-                           class="nav-link text-white rounded fs-5 fw-semibold py-3">
+            @RenderBody()
 
-                            الأدوار
-
-                        </a>
-
-
-                        <!-- الصلاحيات -->
-                        <a asp-controller="Permissions"
-                           asp-action="Index"
-                           class="nav-link text-white rounded fs-5 fw-semibold py-3">
-
-                            الصلاحيات
-
-                        </a>
-
-                    }
-
-
-                    <!-- تسجيل الخروج -->
-                    <a asp-controller="Account"
-                       asp-action="Logout"
-                       class="nav-link text-white rounded fs-5 fw-semibold py-3">
-
-                        تسجيل الخروج
-
-                    </a>
-
-
-                </nav>
-
-            </aside>
-
-
-            <!-- ========================= -->
-            <!-- محتوى الصفحات -->
-            <!-- ========================= -->
-
-            <main class="col-md-9 col-lg-10 p-4">
-
-                @RenderBody()
-
-            </main>
-
-
-        </div>
+        </main>
 
     </div>
 
-
-    <!-- ========================= -->
-    <!-- Footer -->
-    <!-- ========================= -->
-
+    <!-- تذييل الصفحة -->
     <footer class="border-top bg-white text-muted text-center py-3">
-
         1448 - نظام إدارة الخدمات البلدية
-
     </footer>
-
-
-    <!-- ========================= -->
-    <!-- JavaScript -->
-    <!-- ========================= -->
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
 
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 
+    <!-- التحكم بالقائمة الجانبية -->
+    <script>document.addEventListener("DOMContentLoaded", function () {
+
+            const layout = document.getElementById("systemLayout");
+            const toggle = document.getElementById("sidebarToggle");
+
+            if (!layout || !toggle) {
+                return;
+            }
+
+            const mobileQuery = window.matchMedia("(max-width: 767.98px)");
+
+            function updateMenu(open) {
+                layout.classList.toggle("sidebar-open", open);
+
+                toggle.setAttribute(
+                    "aria-expanded",
+                    open ? "true" : "false"
+                );
+            }
+
+            // ظاهرة تلقائياً على الكمبيوتر
+            // ومغلقة تلقائياً على الجوال
+            updateMenu(!mobileQuery.matches);
+
+            toggle.addEventListener("click", function () {
+                const isOpen = layout.classList.contains("sidebar-open");
+                updateMenu(!isOpen);
+            });
+
+            mobileQuery.addEventListener("change", function () {
+                updateMenu(!mobileQuery.matches);
+            });
+
+        });</script>
+
     @await RenderSectionAsync("Scripts", required: false)
 
-
 </body>
-
 </html>
